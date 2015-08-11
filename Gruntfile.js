@@ -10,9 +10,8 @@ module.exports = function(grunt) {
         'bower_components/backbone.localstorage/backbone.localStorage.js'
     ];
 
-    var jsApp = [
-        'js/app.js',
-        'js/**/*.js'
+    var jsConfig = [
+        'dev_files/js/config/**/*.js'
     ];
 
     // project config
@@ -41,7 +40,8 @@ module.exports = function(grunt) {
         uglify: {
             dist: {
                 files: {
-                    'app/assets/js/libs.min.js': [jsLibs]
+                    'app/assets/js/libs.min.js': [jsLibs],
+                    'app/assets/js/config.min.js': [jsConfig]
                 }
             }
         },
@@ -59,7 +59,7 @@ module.exports = function(grunt) {
                 tasks: ['jshint']
             },
             copy: {
-                files: ['dev_files/js/**/*.js', 'dev_files/index.html'],
+                files: ['dev_files/**'],
                 tasks: ['copy']
             }
         },
@@ -67,7 +67,7 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [
-                    {expand: true, cwd: 'dev_files/js/', src: ['**'], dest: 'app/assets/js/', filter: 'isFile'},
+                    {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html'], dest: 'app/assets/'},
                     {expand: true, cwd: 'dev_files/', src: 'index.html', dest: 'app/'}
                 ]
             }
