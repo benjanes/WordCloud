@@ -1,0 +1,6 @@
+bower_components
+node_modules
+app/*
+.sass-cache
+*.log
+*tmp

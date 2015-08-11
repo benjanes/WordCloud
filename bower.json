@@ -1,0 +1,24 @@
+{
+  "name": "WordCloudApp",
+  "version": "0.0.0",
+  "authors": [
+    "Ben Janes <brjanes@gmail.com>"
+  ],
+  "description": "A simple app for generating a word cloud from a text document, with a word's relative size being based on its relative frequency within the document",
+  "main": "app/index.html",
+  "license": "ISC",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "backbone": "~1.2.1",
+    "marionette": "~2.4.2",
+    "backbone.localstorage": "~1.1.16",
+    "bootstrap-sass": "~3.3.5"
+  }
+}
