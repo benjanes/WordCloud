@@ -12,7 +12,10 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
             var loadView = new WordCloud.Filelist.Loadnew();
             var layoutView = new WordCloud.Filelist.Layout();
 
-            //WordCloud.regions.filelist.show(filesView);
+
+            filesView.on('childview:file:delete', function(childView, model){
+                model.destroy();
+            });
 
 
             WordCloud.regions.filelist.show(layoutView);

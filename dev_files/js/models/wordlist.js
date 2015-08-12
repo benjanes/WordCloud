@@ -7,6 +7,8 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
             id: 0
         }
 
+        //urlRoot: ''
+
         /*initialize: function(){
             if (this.isNew()) {
                 this.set('created', Date.now());
@@ -17,31 +19,30 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
 
     Wordlist.FileCollection = Backbone.Collection.extend({
         model: Wordlist.File,
-        //localStorage: new Backbone.LocalStorage('wordcloud-wordlist'),
-        comparator: 'created'
+        //url: '',
+        localStorage: new Backbone.LocalStorage('wordcloud-files')
+
     });
 
-    var files;
-
     var initializeFiles = function(){
-        files = new Wordlist.FileCollection([
-            {
-                fileName: 'first file'
-            },
-            {
-                fileName: 'file numero dos'
-            },
-            {
-                fileName: 'file 3'
-            }
-        ]);
+        var sampleFile = new Wordlist.File();
+        files.add(sampleFile);
+        sampleFile.save();
     };
 
     var API = {
         getFiles: function(){
-            if(files === undefined){
-                initializeFiles();
+
+            var files = new Wordlist.FileCollection();
+            files.fetch();
+
+            // load in a sample if there aren't any files loaded in local storage
+            if(files.length === 0){
+                var sampleFile = new Wordlist.File({fileName: 'Sample File'});
+                files.add(sampleFile);
+                sampleFile.save();
             }
+
             return files;
         }
     };

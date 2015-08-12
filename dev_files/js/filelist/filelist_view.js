@@ -15,7 +15,23 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
 
     Filelist.File = Marionette.ItemView.extend({
         template: 'fileitem',
-        tagName: 'li'
+        tagName: 'li',
+
+        events: {
+            'click button.js-delete' : 'deleteFile'
+        },
+
+        deleteFile: function(e){
+            e.stopPropagation();
+            this.trigger('file:delete', this.model);
+        },
+
+        remove: function(){
+            var self = this;
+            this.$el.fadeOut(function(){
+                Marionette.ItemView.prototype.remove.call(self);
+            });
+        }
     });
 
     Filelist.Files = Marionette.CompositeView.extend({
