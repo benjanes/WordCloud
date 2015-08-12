@@ -1,23 +1,26 @@
 WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette, $, _){
 
     Filelist.Controller = {
+
         listFiles: function(){
+            var files = WordCloud.request('wordlist:files');
 
-            var fetchingFiles = WordCloud.request('wordlist:files');
-
-            var filelistLayout = new Filelist.Layout();
-            var filelistLoadnew = new Filelist.Loadnew();
-
-            $.when(fetchingFiles).done(function(files){
-
-                var filelistFiles = new Filelist.Files({
-                    collection: files
-                });
-
-
-
+            var filesView = new WordCloud.Filelist.Files({
+                collection: files
             });
+
+            var loadView = new WordCloud.Filelist.Loadnew();
+            var layoutView = new WordCloud.Filelist.Layout();
+
+            //WordCloud.regions.filelist.show(filesView);
+
+
+            WordCloud.regions.filelist.show(layoutView);
+
+            layoutView.loadRegion.show(loadView);
+            layoutView.listRegion.show(filesView);
         }
+
     };
 
 });

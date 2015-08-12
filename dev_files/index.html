@@ -11,10 +11,10 @@
 
     <h1>WordCloud</h1>
 
-    <div class="container" id="app-container">
+    <div class="container-fluid" id="app-container">
         <div class="row">
             <section class="col-sm-3">
-                <div id="load-region"></div>
+                <div id="filelist-region"></div>
                 <div id="edit-region"></div>
                 <div id="draw-region"></div>
             </section>
@@ -27,8 +27,12 @@
     <script type="text/javascript" src="assets/js/libs.min.js"></script>
     <script type="text/javascript" src="assets/js/config.min.js"></script>
     <script type="text/javascript" src="assets/js/app.js"></script>
-    <script type="text/javascript" src="assets/js/models/WordCloud.Wordlists.js"></script>
-    <script type="text/javascript" src="assets/js/views/WordCloud.Views.js"></script>
+    <script type="text/javascript" src="assets/js/models/wordlist.js"></script>
+    <script type="text/javascript" src="assets/js/filelist/filelist_view.js"></script>
+    <script type="text/javascript" src="assets/js/filelist/filelist_controller.js"></script>
+    <script type="text/javascript" src="assets/js/canvas/canvas_view.js"></script>
+    <script type="text/javascript" src="assets/js/canvas/canvas_controller.js"></script>
+
     <script type="text/javascript">
         WordCloud.start();
     </script>

@@ -21,9 +21,9 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
     Filelist.Files = Marionette.CompositeView.extend({
         template: 'fileitems',
         childView: Filelist.File,
-        childViewContainer: 'ul',
+        childViewContainer: 'ol'
 
-        initialize: function(){
+        /*initialize: function(){
             this.listenTo(this.collection, 'reset', function(){
                 this.attachHtml = function(collectionView, childView, index){
                     collectionView.$el.append(childView.el);
@@ -35,7 +35,7 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
             this.attachHtml = function(collectionView, childView, index){
                 collectionView.$el.prepend(childView.el);
             };
-        }
+        }*/
     });
 
     /*Views.LoadView = Backbone.Marionette.ItemView.extend({
