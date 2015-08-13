@@ -11,13 +11,13 @@ WordCloud.module('FileCollection', function(FileCollection, WordCloud, Backbone,
 
     _.extend(FileCollection.Controller.prototype, {
         start: function() {
-            this.showDrawingArea();
+            this.showInstructions();
             this.showFileList();
         },
 
-        showDrawingArea: function(){
-            var canvasView = new WordCloud.Canvas.View();
-            WordCloud.regions.canvas.show(canvasView);
+        showInstructions: function(){
+            //var instructionsView = new WordCloud.Canvas.Instructions1({template: 'instructions_1'});
+            WordCloud.regions.canvas.show( new WordCloud.Canvas.Instructions1() );
         },
 
         showFileList: function(){
