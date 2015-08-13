@@ -11,8 +11,13 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
     Canvas.Wordcloud = Marionette.ItemView.extend({
         template: 'canvas',
 
-        onRender: function(){
-            console.log('rendered');
+        events: {
+            'click button.js-redraw' : 'redrawCanvas'
+        },
+
+        redrawCanvas: function(){
+            // trigger a redrawing of the canvas with the same model and settings
+            console.log('redraw triggered');
         }
     });
 

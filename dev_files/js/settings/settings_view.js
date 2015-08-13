@@ -9,11 +9,8 @@ WordCloud.module('Settings', function(Settings, WordCloud, Backbone, Marionette,
 
         drawCloud: function(e){
             e.preventDefault();
-
             var data = Backbone.Syphon.serialize(this);
-            //console.log( data );
             WordCloud.trigger('cloud:draw', this.model, data);
-
         }
     });
 
