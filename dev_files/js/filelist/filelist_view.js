@@ -1,29 +1,22 @@
 WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette, $, _){
 
-    Filelist.Layout = Marionette.LayoutView.extend({
-        template: 'filelist_layout',
-
-        regions: {
-            loadRegion: '#load-region',
-            listRegion: '#list-files-region'
-        }
-    });
-
-    Filelist.Loadnew = Marionette.ItemView.extend({
-        template: 'load'
-    });
-
     Filelist.File = Marionette.ItemView.extend({
         template: 'fileitem',
         tagName: 'li',
 
         events: {
-            'click button.js-delete' : 'deleteFile'
+            'click button.js-delete' : 'deleteFile',
+            'click button.js-select' : 'selectFile'
         },
 
         deleteFile: function(e){
             e.stopPropagation();
             this.trigger('file:delete', this.model);
+        },
+
+        selectFile: function(e){
+            e.stopPropagation();
+            this.trigger('file:select', this.model);
         },
 
         remove: function(){
@@ -37,31 +30,13 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
     Filelist.Files = Marionette.CompositeView.extend({
         template: 'fileitems',
         childView: Filelist.File,
-        childViewContainer: 'ol'
-
-        /*initialize: function(){
-            this.listenTo(this.collection, 'reset', function(){
-                this.attachHtml = function(collectionView, childView, index){
-                    collectionView.$el.append(childView.el);
-                };
-            });
-        },
-
-        onRenderCollection: function(){
-            this.attachHtml = function(collectionView, childView, index){
-                collectionView.$el.prepend(childView.el);
-            };
-        }*/
-    });
-
-    /*Views.LoadView = Backbone.Marionette.ItemView.extend({
-        template: 'load',
+        childViewContainer: 'ol',
 
         events: {
-            'change input.js-load-file': 'addWordlist'
+            'change input' : 'clickedInput'
         },
 
-        addWordlist: function(e) {
+        clickedInput: function(e){
 
             var file = e.target.files[0];
 
@@ -70,28 +45,35 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
             } else if (!file.type.match('text.*')) {
                 alert(file.name + ' is not a text file. Please choose a text file to load!');
             } else {
+
                 var reader = new FileReader();
+                reader.readAsText(file);
+
+                var passedThis = this;
 
                 reader.onload = function(e) {
-                    var contents = e.target.result;
 
-                    console.log('file name: ' + file.name + ', file type: ' + file.type);
+                    var fileName = file.name;
 
-                    var contentsArray = (contents.split(' ')).filter(function(val){
+                    var result = e.target.result;
+
+                    var contentsArray = (result.split(' ')).filter(function(val){
                         return val.charAt(0) !== '{' && val.indexOf('\\') === -1;
                     });
-                    var newArr = contentsArray.map(function(val){
+                    var fileWords = contentsArray.map(function(val){
                         return val.replace(/\W/g, '').toLowerCase();
                     });
 
-                    console.log(newArr);
-                };
+                    this.collection.add({fileName: fileName, fileWords: fileWords});
 
-                reader.readAsText(file);
+                    return this;
+
+                }.bind(passedThis);
+
             }
 
         }
 
-    });*/
+    });
 
 });

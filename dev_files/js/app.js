@@ -6,7 +6,8 @@ WordCloud.on('before:start', function(){
 
         regions: {
             filelist: '#filelist-region',
-            canvas: '#canvas-region'
+            canvas: '#canvas-region',
+            selectedFile: '#selectedfile-region'
         }
     });
 
@@ -15,10 +16,15 @@ WordCloud.on('before:start', function(){
 
 
 
+WordCloud.on('file:select', function(id){
+    WordCloud.Selectedfile.Controller.showFile(id);
+});
+
 WordCloud.on('start', function(){
 
-    WordCloud.Canvas.Controller.showCanvas();
-    WordCloud.Filelist.Controller.listFiles();
+    if(Backbone.history){
+        Backbone.history.start();
+    }
 
 });
 

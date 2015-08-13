@@ -4,31 +4,22 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
 
         defaults: {
             fileName: '',
-            id: 0
-        }
+            fileWords: ''
+        },
 
-        //urlRoot: ''
-
-        /*initialize: function(){
+        initialize: function(){
             if (this.isNew()) {
-                this.set('created', Date.now());
+                this.set('id', Date.now());
             }
-        }*/
+        }
 
     });
 
     Wordlist.FileCollection = Backbone.Collection.extend({
         model: Wordlist.File,
-        //url: '',
-        localStorage: new Backbone.LocalStorage('wordcloud-files')
-
+        localStorage: new Backbone.LocalStorage('wordcloud-files'),
+        comparator: 'id'
     });
-
-    var initializeFiles = function(){
-        var sampleFile = new Wordlist.File();
-        files.add(sampleFile);
-        sampleFile.save();
-    };
 
     var API = {
         getFiles: function(){
@@ -44,6 +35,13 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
             }
 
             return files;
+        },
+
+        // this part seems to need work...
+        getFile: function(fileId){
+            var file = new Wordlist.File({id: fileId});
+            file.fetch();
+            return file;
         }
     };
 
@@ -51,22 +49,8 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
         return API.getFiles();
     });
 
-    /*var API = {
-        getWordlistFiles: function(){
-            var files = new Wordlists.FileCollection();
-            var defer = $.Deferred();
-
-            files.fetch({
-                success: function(data){
-                    defer.resolve(data);
-                }
-            });
-
-            var promise = defer.promise();
-            return promise;
-        }
-    };
-
-    */
+    WordCloud.reqres.setHandler('wordlist:file', function(id){
+        return API.getFile(id);
+    });
 
 });

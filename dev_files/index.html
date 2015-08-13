@@ -7,11 +7,20 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body>
+<body id="app-container">
 
-    <h1>WordCloud</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-sm-6">
+                <h1>WordCloud</h1>
+            </section>
+            <section class="col-sm-6">
+                <div id="selectedfile-region"></div>
+            </section>
+        </div>
+    </div>
 
-    <div class="container-fluid" id="app-container">
+    <div class="container-fluid">
         <div class="row">
             <section class="col-sm-3">
                 <div id="filelist-region"></div>
@@ -28,10 +37,13 @@
     <script type="text/javascript" src="assets/js/config.min.js"></script>
     <script type="text/javascript" src="assets/js/app.js"></script>
     <script type="text/javascript" src="assets/js/models/wordlist.js"></script>
+    <script type="text/javascript" src="assets/js/Collections/filecollection.js"></script>
     <script type="text/javascript" src="assets/js/filelist/filelist_view.js"></script>
-    <script type="text/javascript" src="assets/js/filelist/filelist_controller.js"></script>
+    <!--<script type="text/javascript" src="assets/js/filelist/filelist_controller.js"></script>-->
     <script type="text/javascript" src="assets/js/canvas/canvas_view.js"></script>
-    <script type="text/javascript" src="assets/js/canvas/canvas_controller.js"></script>
+    <!--<script type="text/javascript" src="assets/js/canvas/canvas_controller.js"></script>-->
+    <script type="text/javascript" src="assets/js/selectedfile/selectedfile_view.js"></script>
+    <script type="text/javascript" src="assets/js/selectedfile/selectedfile_controller.js"></script>
 
     <script type="text/javascript">
         WordCloud.start();
