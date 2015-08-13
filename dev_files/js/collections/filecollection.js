@@ -16,7 +16,6 @@ WordCloud.module('FileCollection', function(FileCollection, WordCloud, Backbone,
         },
 
         showInstructions: function(){
-            //var instructionsView = new WordCloud.Canvas.Instructions1({template: 'instructions_1'});
             WordCloud.regions.canvas.show( new WordCloud.Canvas.Instructions1() );
         },
 

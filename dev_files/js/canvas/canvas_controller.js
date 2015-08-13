@@ -12,7 +12,15 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             var defaultOmits = ['a', 'the', 'and'];
             var omits = $.merge(defaultOmits, userOmits);
 
-            var wordList = model.attributes.fileWords.split(',');
+            var wordList;
+            if ( typeof model.attributes.fileWords === 'string' ){
+                wordList = model.attributes.fileWords.split(',');
+            } else {
+                wordList = model.attributes.fileWords;
+            }
+
+            console.log(wordList);
+            //var wordList = words.split(',');
 
             //console.log(omits);
 
@@ -114,9 +122,196 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 return wordFreqData;
             };
 
+            var findDrawingCoords = function(array){
+                // an array of objects, with minX, minY, maxX(= minX + fillWidth), maxY(= minY + fontHeight)
+                var occupiedZones = [];
+
+                var testIncrementer = 0;
+
+                function OccupiedZone(minX, maxX, minY, maxY, word){
+                    this.word = word;
+                    this.minX = minX;
+                    this.maxX = maxX;
+                    this.minY = minY;
+                    this.maxY = maxY;
+                }
+
+                // 1. select a random point for which to draw from that isn't in the occupied space
+                var selectPoint = function(val, ind, arr){
+                    var randX, randY, randRot, dimensionSpan, SPAN;
+                    // random numbers based around centering the image at 0,0
+                    randRot = (1 - Math.floor(Math.random() * 3)) * 90;
+
+                    SPAN = 150;
+                    dimensionSpan = SPAN;
+
+                    var newXY = function(){
+                        randX = Math.floor((0.5 - Math.random()) * dimensionSpan);
+                        randY = Math.floor((0.5 - Math.random()) * dimensionSpan);
+                    };
+
+                    var testCoordinate = function(testX, testY, obj) {
+                        var minX, maxX, minY, maxY;
+
+                        if (randRot === -90) {
+                            minX = testX - val.fontHeight;
+                            maxX = testX;
+                            minY = testY - val.fillWidth;
+                            maxY = testY;
+                        } else if (randRot === 90) {
+                            minX = testX;
+                            maxX = testX + val.fontHeight;
+                            minY = testY;
+                            maxY = testY + val.fillWidth;
+                        } else {
+                            minX = testX;
+                            maxX = testX + val.fillWidth;
+                            minY = testY - val.fontHeight;
+                            maxY = testY;
+                        }
+
+                        var mid1 = { x: minX, y: (maxY - minY) / 2 };
+                        var mid2 = { x: (maxX - minX) / 2, y: minY };
+                        var mid3 = { x: maxX, y: (maxY - minY) / 2 };
+                        var mid4 = { x: (maxX - minX) / 2, y: maxY };
+
+                        if ( minX > obj.maxX || minX < obj.minX || maxY > obj.maxY || maxY < obj.minY &&
+                            minX > obj.maxX || minX < obj.minX || minY > obj.maxY || minY < obj.minY &&
+                            maxX > obj.maxX || maxX < obj.minX || maxY > obj.maxY || maxY < obj.minY &&
+                            maxX > obj.maxX || maxX < obj.minX || minY > obj.maxY || minY < obj.minY &&
+                            mid1.x > obj.maxX || mid1.x < obj.minX || mid1.y > obj.maxY || mid1.y < obj.minY &&
+                            mid2.x > obj.maxX || mid2.x < obj.minX || mid2.y > obj.maxY || mid2.y < obj.minY &&
+                            mid3.x > obj.maxX || mid3.x < obj.minX || mid3.y > obj.maxY || mid3.y < obj.minY &&
+                            mid4.x > obj.maxX || mid4.x < obj.minX || mid4.y > obj.maxY || mid4.y < obj.minY
+                        ){
+
+                            /*val.xCoord = randX;
+                            val.yCoord = randY;
+                            val.rot = randRot;*/
+
+                        } else {
+
+                            testIncrementer++;
+                            if (testIncrementer >= 30) {
+                                dimensionSpan += 30;
+                            }
+                            return testLoop();
+                        }
+
+
+                    };
+
+
+                    var addOccupiedZone = function(){
+                        if (randRot === -90) {
+                            occupiedZones.push(new OccupiedZone(
+                                randX - val.fontHeight,
+                                randX,
+                                randY - val.fillWidth,
+                                randY,
+                                val.word
+                            ));
+                        } else if (randRot === 90) {
+                            occupiedZones.push(new OccupiedZone(
+                                randX,
+                                randX + val.fontHeight,
+                                randY,
+                                randY + val.fillWidth,
+                                val.word
+                            ));
+                        } else {
+                            occupiedZones.push(new OccupiedZone(
+                                randX,
+                                randX + val.fillWidth,
+                                randY - val.fontHeight,
+                                randY,
+                                val.word
+                            ));
+                        }
+                    };
+
+                    var testLoop = function(){
+                        newXY();
+
+                        if (occupiedZones.length > 0) {
+
+                            //newXY();
+
+                            for (var i = 0; i < occupiedZones.length; i++) {
+
+                                testCoordinate(randX, randY, occupiedZones[i]);
+
+                                if (i === occupiedZones.length - 1) {
+
+                                    val.xCoord = randX;
+                                    val.yCoord = randY;
+                                    val.rot = randRot;
+
+                                    addOccupiedZone();
+                                    dimensionSpan = SPAN;
+                                    break;
+                                }
+                            }
+
+                        } else {
+
+                            //newXY();
+
+                            val.xCoord = randX;
+                            val.yCoord = randY;
+                            val.rot = randRot;
+
+                            addOccupiedZone();
+                        }
+                    };
+
+                    testLoop();
+
+                };
+
+                array.forEach(selectPoint);
+
+                occupiedZones.sort(function(a, b){
+                    return a.minX - b.minX;
+                });
+
+                var xCanvasOrigin = Math.floor(occupiedZones[0].minX);
+
+                occupiedZones.sort(function(a, b){
+                    return a.minY - b.minY;
+                });
+
+                var yCanvasOrigin = Math.floor(occupiedZones[0].minY);
+
+                occupiedZones.sort(function(a, b){
+                    return b.maxX - a.maxX;
+                });
+
+                var canvasWidth = Math.ceil(occupiedZones[0].maxX) - xCanvasOrigin;
+
+                occupiedZones.sort(function(a, b){
+                    return b.maxY - a.maxY;
+                });
+
+                var canvasHeight = Math.ceil(occupiedZones[0].maxY) - yCanvasOrigin;
+
+                canvasDimensions = {
+                    minX: xCanvasOrigin,
+                    minY: yCanvasOrigin,
+                    width: canvasWidth,
+                    height: canvasHeight
+                };
+
+                console.log(occupiedZones);
+
+                return array;
+            };
+
             var transformedList = transformData(wordList, textSize, wordLimit, omits);
 
-            console.log(transformedList);
+            var drawingCoords = findDrawingCoords(transformedList);
+
+            console.log(drawingCoords);
         }
     };
 

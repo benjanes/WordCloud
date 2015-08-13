@@ -29,7 +29,7 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
 
             // load in a sample if there aren't any files loaded in local storage
             if(files.length === 0){
-                var sampleFile = new Wordlist.File({fileName: 'Sample File', fileWords: 'this,is,wordcloud,wordcloud'});
+                var sampleFile = new Wordlist.File({fileName: 'Sample File', fileWords: ['this', 'is', 'wordcloud', 'wordcloud']});
                 files.add(sampleFile);
                 sampleFile.save();
             }
@@ -37,26 +37,10 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
             return files;
         },
 
-        // this part seems to need work...
-        /*getFile: function(fileId){
-            var file = new Wordlist.File({id: fileId});
-
-            var defer = $.Deferred();
-            file.fetch({
-                success: function(data){
-                    defer.resolve(data);
-                }
-            });
-            return defer.promise();
-        }*/
     };
 
     WordCloud.reqres.setHandler('wordlist:files', function(){
         return API.getFiles();
     });
-
-    /*WordCloud.reqres.setHandler('wordlist:file', function(id){
-        return API.getFile(id);
-    });*/
 
 });
