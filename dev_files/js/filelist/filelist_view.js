@@ -16,6 +16,7 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
 
         selectFile: function(e){
             e.stopPropagation();
+            $('.selected').removeClass('selected');
             this.$el.addClass('selected');
             this.trigger('file:select', this.model);
         },
