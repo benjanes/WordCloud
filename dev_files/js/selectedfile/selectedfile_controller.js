@@ -2,11 +2,9 @@ WordCloud.module('Selectedfile', function(Selectedfile, WordCloud, Backbone, Mar
 
     Selectedfile.Controller = {
 
-        showFile: function(id){
-            var file = WordCloud.request('wordlist:file', id);
-
+        showFile: function(model){
             var fileView = new Selectedfile.File({
-                model: file
+                model: model
             });
 
             WordCloud.regions.selectedFile.show(fileView);

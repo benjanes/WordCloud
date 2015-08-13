@@ -15,9 +15,8 @@ WordCloud.on('before:start', function(){
 });
 
 
-
-WordCloud.on('file:select', function(id){
-    WordCloud.Selectedfile.Controller.showFile(id);
+WordCloud.on('file:select', function(model){
+    WordCloud.Selectedfile.Controller.showFile(model);
 });
 
 WordCloud.on('start', function(){

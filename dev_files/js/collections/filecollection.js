@@ -34,7 +34,7 @@ WordCloud.module('FileCollection', function(FileCollection, WordCloud, Backbone,
                 });
 
                 filesView.on('childview:file:select', function(childView, model){
-                    WordCloud.trigger('file:select', model.get('id'));
+                    WordCloud.trigger('file:select', model);
                 });
 
 
@@ -42,6 +42,7 @@ WordCloud.module('FileCollection', function(FileCollection, WordCloud, Backbone,
             });
 
         }
+
     });
 
     FileCollection.addInitializer(function(){

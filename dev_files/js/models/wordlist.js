@@ -38,19 +38,25 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
         },
 
         // this part seems to need work...
-        getFile: function(fileId){
+        /*getFile: function(fileId){
             var file = new Wordlist.File({id: fileId});
-            file.fetch();
-            return file;
-        }
+
+            var defer = $.Deferred();
+            file.fetch({
+                success: function(data){
+                    defer.resolve(data);
+                }
+            });
+            return defer.promise();
+        }*/
     };
 
     WordCloud.reqres.setHandler('wordlist:files', function(){
         return API.getFiles();
     });
 
-    WordCloud.reqres.setHandler('wordlist:file', function(id){
+    /*WordCloud.reqres.setHandler('wordlist:file', function(id){
         return API.getFile(id);
-    });
+    });*/
 
 });
