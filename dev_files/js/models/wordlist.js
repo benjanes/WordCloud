@@ -9,7 +9,7 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
 
         initialize: function(){
             if (this.isNew()) {
-                this.set('id', Date.now());
+                this.set('created', Date.now());
             }
         }
 
@@ -18,7 +18,7 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
     Wordlist.FileCollection = Backbone.Collection.extend({
         model: Wordlist.File,
         localStorage: new Backbone.LocalStorage('wordcloud-files'),
-        comparator: 'id'
+        comparator: 'created'
     });
 
     var API = {
@@ -29,7 +29,7 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
 
             // load in a sample if there aren't any files loaded in local storage
             if(files.length === 0){
-                var sampleFile = new Wordlist.File({fileName: 'Sample File'});
+                var sampleFile = new Wordlist.File({fileName: 'Sample File', fileWords: 'this,is,wordcloud,wordcloud'});
                 files.add(sampleFile);
                 sampleFile.save();
             }

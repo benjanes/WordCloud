@@ -7,7 +7,8 @@ module.exports = function(grunt) {
         'bower_components/underscore/underscore.js',
         'bower_components/backbone/backbone.js',
         'bower_components/marionette/lib/backbone.marionette.js',
-        'bower_components/backbone.localstorage/backbone.localStorage.js'
+        'bower_components/backbone.localstorage/backbone.localStorage.js',
+        'bower_components/backbone.syphon/lib/backbone.syphon.js'
     ];
 
     var jsConfig = [
