@@ -19,11 +19,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 wordList = model.attributes.fileWords;
             }
 
-            console.log(wordList);
-            //var wordList = words.split(',');
-
-            //console.log(omits);
-
             var canvas = document.getElementById('word-cloud'),
                 ctx = canvas.getContext('2d');
 
@@ -302,16 +297,42 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     height: canvasHeight
                 };
 
-                console.log(occupiedZones);
+                //console.log(occupiedZones);
 
                 return array;
             };
 
+            // use the drawing coordinates to draw the word cloud
+            var drawWordCloud = function(coordsArray, canvasSizingObj) {
+
+                var drawWord = function(word) {
+                    ctx.translate( word.xCoord, word.yCoord ); // the x, y coords for this word
+                    ctx.rotate( word.rot * Math.PI / 180 ); // the rot
+                    ctx.font = word.font;
+                    ctx.fillText(word.word, 0, 0);
+                    ctx.rotate( -(word.rot) * Math.PI / 180 );
+                    ctx.translate( -(word.xCoord), -(word.yCoord) );
+                    //console.log('word: ' + word.word + '; translate: ' + word.xCoord + ', ' + word.yCoord + '; rotation: ' + word.rot);
+                    //ctx.restore(); // undo the translation, rotation, and font style
+                };
+
+                var xTrans = Math.abs(canvasSizingObj.minX) + 5;
+                var yTrans = Math.abs(canvasSizingObj.minY) + 5;
+
+                canvas.height = canvasSizingObj.height + 10;
+                canvas.width = canvasSizingObj.width + 10;
+
+                ctx.translate(xTrans, yTrans);
+                ctx.save();
+                coordsArray.forEach(drawWord);
+            };
+
+
             var transformedList = transformData(wordList, textSize, wordLimit, omits);
-
             var drawingCoords = findDrawingCoords(transformedList);
+            drawWordCloud(drawingCoords, canvasDimensions);
 
-            console.log(drawingCoords);
+            //console.log(drawingCoords);
         }
     };
 
