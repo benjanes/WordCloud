@@ -2,6 +2,7 @@ WordCloud.module('Settings', function(Settings, WordCloud, Backbone, Marionette,
 
     Settings.View = Marionette.ItemView.extend({
         template: 'settings',
+        className: 'settings-container',
 
         events: {
             'submit form' : 'drawCloud'

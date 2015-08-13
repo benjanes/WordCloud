@@ -1,2 +1,43 @@
 @import bootstrap-custom
 
+header
+    background-color: #1C1C2F
+    color: #FFFFE5
+
+.left-col
+    border-right: 2px solid #1C1C2F
+    overflow: hidden
+
+.list-container
+    padding-top: 1em
+
+.settings-container
+    position: relative
+    padding-top: 1em
+
+.settings-container:before
+    content: ''
+    background-color: #1C1C2F
+    height: 2px
+    position: absolute
+    width: 150%
+    left: -25%
+    top: 0
+
+.btn-file-input
+    position: relative
+    overflow: hidden
+
+.btn-file-input input[type=file]
+    position: absolute
+    top: 0
+    right: 0
+    min-width: 100%
+    min-height: 100%
+    filter: alpha(opacity=0)
+    opacity: 0
+    display: block
+    cursor: inherit
+
+.selected
+    background-color: yellow
