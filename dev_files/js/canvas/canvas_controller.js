@@ -8,8 +8,13 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
             var textSize = settings.textSize;
             var wordLimit = settings.wordLimit;
-            var omittedWords = settings.omittedWords.split(' ');
+            var userOmits = settings.omittedWords.split(' ');
+            var defaultOmits = ['a', 'the', 'and'];
+            var omits = $.merge(defaultOmits, userOmits);
+
             var wordList = model.attributes.fileWords.split(',');
+
+            //console.log(omits);
 
             var canvas = document.getElementById('word-cloud'),
                 ctx = canvas.getContext('2d');
@@ -31,8 +36,17 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 return false;
             }
 
+            function checkArray(value, array) {
+                for (var i = 0; i < array.length; i++) {
+                    if (array[i] === value) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             // transform the array of words into frequency data set
-            var transformData = function(array, fontPx, limit, font) {
+            var transformData = function(array, fontPx, limit, omits, font) {
                 var wordFreqData = [];
                 var wordList = [];
                 var fontSize = fontPx ? fontPx : 30;
@@ -51,9 +65,13 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                 var toCountData = function(val, ind, arr) {
                     if (!checkValue(val, wordFreqData)) {
-                        var newWord = new Word(val);
-                        wordFreqData.push(newWord);
-                        wordList.push(val);
+                        if (checkArray(val, omits)) {
+                            return false;
+                        } else {
+                            var newWord = new Word(val);
+                            wordFreqData.push(newWord);
+                            wordList.push(val);
+                        }
                     } else {
                         var index = wordList.indexOf(val);
                         wordFreqData[index].count += 1;
@@ -78,8 +96,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 // for ease of finding that word's index
                 array.map(toCountData);
 
-                // --->> this is where word omissions should be performed, before the sorting and calculations
-
                 // sort the frequency data
                 wordFreqData.sort(function(a, b){
                     return b.count - a.count;
@@ -98,7 +114,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 return wordFreqData;
             };
 
-            var transformedList = transformData(wordList, textSize, wordLimit);
+            var transformedList = transformData(wordList, textSize, wordLimit, omits);
 
             console.log(transformedList);
         }
