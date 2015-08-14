@@ -20,6 +20,7 @@
     "marionette": "~2.4.2",
     "backbone.localstorage": "~1.1.16",
     "bootstrap-sass": "~3.3.5",
-    "backbone.syphon": "~0.6.2"
+    "backbone.syphon": "~0.6.2",
+    "mjolnic-bootstrap-colorpicker": "~2.3.0"
   }
 }

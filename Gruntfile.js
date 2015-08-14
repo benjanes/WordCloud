@@ -8,7 +8,8 @@ module.exports = function(grunt) {
         'bower_components/backbone/backbone.js',
         'bower_components/marionette/lib/backbone.marionette.js',
         'bower_components/backbone.localstorage/backbone.localStorage.js',
-        'bower_components/backbone.syphon/lib/backbone.syphon.js'
+        'bower_components/backbone.syphon/lib/backbone.syphon.js',
+        'bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js'
     ];
 
     var jsConfig = [
@@ -68,9 +69,13 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [
-                    {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html'], dest: 'app/assets/'},
+                    {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html', '!plugins/**'], dest: 'app/assets/'},
                     {expand: true, cwd: 'dev_files/', src: 'index.html', dest: 'app/'},
-                    {expand: true, cwd: 'bower_components/bootstrap-sass/assets/', src: 'fonts/', dest: 'app/assets/'}
+                    // bootstrap glyphicons
+                    {expand: true, cwd: 'bower_components/bootstrap-sass/assets/', src: 'fonts/', dest: 'app/assets/'},
+                    // colorpicker plugin
+                    {expand: true, cwd: 'bower_components/mjolnic-bootstrap-colorpicker/dist/css/', src: 'bootstrap-colorpicker.min.css', dest: 'app/assets/css/'},
+                    {expand: true, cwd: 'bower_components/mjolnic-bootstrap-colorpicker/dist/', src: 'img/**', dest: 'app/assets/'}
                 ]
             }
         },

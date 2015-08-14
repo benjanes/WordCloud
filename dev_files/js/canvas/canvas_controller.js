@@ -14,6 +14,10 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             var font = settings.fontType;
             var cloudSpread = settings.cloudSpread;
 
+            var fontRGB = hexToRgb(settings.fontColor);
+            var fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
+            console.log(fontColor);
+
             var wordList;
             if ( typeof model.attributes.fileWords === 'string' ){
                 wordList = model.attributes.fileWords.split(',');
@@ -31,7 +35,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 height: 0
             };
 
-            // helper function
+            // helper functions
             function checkValue(value, array) {
                 for (var i = 0; i < array.length; i++) {
                     if (array[i].word === value) {
@@ -41,6 +45,16 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 return false;
             }
 
+            function hexToRgb(hex) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            }
+
+            // take this out and do properly!
             function checkArray(value, array) {
                 for (var i = 0; i < array.length; i++) {
                     if (array[i] === value) {
@@ -305,12 +319,13 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             };
 
             // use the drawing coordinates to draw the word cloud
-            var drawWordCloud = function(coordsArray, canvasSizingObj) {
+            var drawWordCloud = function(coordsArray, canvasSizingObj, fontColor) {
 
                 var drawWord = function(word) {
                     ctx.translate( word.xCoord, word.yCoord ); // the x, y coords for this word
                     ctx.rotate( word.rot * Math.PI / 180 ); // the rot
                     ctx.font = word.font;
+                    //ctx.fillStyle = fontColor;
                     ctx.fillText(word.word, 0, 0);
                     ctx.rotate( -(word.rot) * Math.PI / 180 );
                     ctx.translate( -(word.xCoord), -(word.yCoord) );
@@ -325,6 +340,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 canvas.width = canvasSizingObj.width + 10;
 
                 ctx.translate(xTrans, yTrans);
+                ctx.fillStyle = fontColor;
                 ctx.save();
                 coordsArray.forEach(drawWord);
             };
@@ -332,7 +348,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
             var transformedList = transformData(wordList, textSize, wordLimit, omits, font);
             var drawingCoords = findDrawingCoords(transformedList, cloudSpread);
-            drawWordCloud(drawingCoords, canvasDimensions);
+            drawWordCloud(drawingCoords, canvasDimensions, fontColor);
 
             //console.log(drawingCoords);
         }

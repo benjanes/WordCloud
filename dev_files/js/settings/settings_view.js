@@ -12,6 +12,10 @@ WordCloud.module('Settings', function(Settings, WordCloud, Backbone, Marionette,
             e.preventDefault();
             var data = Backbone.Syphon.serialize(this);
             WordCloud.trigger('cloud:draw', this.model, data);
+        },
+
+        onRender: function(){
+            this.$el.find('.color-select-area').colorpicker();
         }
     });
 
