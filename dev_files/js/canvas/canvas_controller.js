@@ -12,6 +12,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             var defaultOmits = ['a', 'the', 'and'];
             var omits = $.merge(defaultOmits, userOmits);
             var font = settings.fontType;
+            var cloudSpread = settings.cloudSpread;
 
             var wordList;
             if ( typeof model.attributes.fileWords === 'string' ){
@@ -118,10 +119,10 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 return wordFreqData;
             };
 
-            var findDrawingCoords = function(array){
+            var findDrawingCoords = function(array, spread){
                 // an array of objects, with minX, minY, maxX(= minX + fillWidth), maxY(= minY + fontHeight)
                 var occupiedZones = [];
-
+                var spreadVal = spread;
                 var testIncrementer = 0;
 
                 function OccupiedZone(minX, maxX, minY, maxY, word){
@@ -138,7 +139,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     // random numbers based around centering the image at 0,0
                     randRot = (1 - Math.floor(Math.random() * 3)) * 90;
 
-                    SPAN = 150;
+                    SPAN = spreadVal;
                     dimensionSpan = SPAN;
 
                     var newXY = function(){
@@ -330,7 +331,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
 
             var transformedList = transformData(wordList, textSize, wordLimit, omits, font);
-            var drawingCoords = findDrawingCoords(transformedList);
+            var drawingCoords = findDrawingCoords(transformedList, cloudSpread);
             drawWordCloud(drawingCoords, canvasDimensions);
 
             //console.log(drawingCoords);
