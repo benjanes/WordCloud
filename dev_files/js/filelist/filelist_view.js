@@ -66,7 +66,10 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
                         return val.replace(/\W/g, '').toLowerCase();
                     });
 
-                    this.collection.add({fileName: fileName, fileWords: fileWords});
+                    var newFile = new WordCloud.Wordlist.File({fileName: fileName, fileWords: fileWords});
+
+                    this.collection.add(newFile);
+                    newFile.save();
 
                     return this;
 
