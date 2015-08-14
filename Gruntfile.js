@@ -69,7 +69,8 @@ module.exports = function(grunt) {
             main: {
                 files: [
                     {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html'], dest: 'app/assets/'},
-                    {expand: true, cwd: 'dev_files/', src: 'index.html', dest: 'app/'}
+                    {expand: true, cwd: 'dev_files/', src: 'index.html', dest: 'app/'},
+                    {expand: true, cwd: 'bower_components/bootstrap-sass/assets/', src: 'fonts/', dest: 'app/assets/'}
                 ]
             }
         },
