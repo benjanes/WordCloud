@@ -16,9 +16,14 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
     });
 
     Wordlist.FileCollection = Backbone.Collection.extend({
+
         model: Wordlist.File,
         localStorage: new Backbone.LocalStorage('wordcloud-files'),
-        comparator: 'created'
+
+        comparator: function(model) {
+            return -model.get('created');
+        }
+
     });
 
     var API = {
