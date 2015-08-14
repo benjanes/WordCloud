@@ -74,11 +74,13 @@ module.exports = function(grunt) {
             }
         },
 
-        //grunt serve
-        'http-server': {
-            'dev': {
-                root: './app',
-                port: 9000
+        connect: {
+            server: {
+                options: {
+                    livereload: true,
+                    base: './app',
+                    port: 9000
+                }
             }
         }
     });
@@ -88,8 +90,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-http-server');
+    grunt.loadNpmTasks('grunt-contrib-connect');
 
-    grunt.registerTask('default', ['sass', 'jshint', 'uglify', 'copy', 'watch']);
-    grunt.registerTask('serve', ['http-server:dev']);
+    grunt.registerTask('default', ['sass', 'jshint', 'uglify', 'copy']);
+    grunt.registerTask('serve', ['default', 'connect:server', 'watch']);
 };
