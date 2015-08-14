@@ -1,8 +1,6 @@
-<h5>Settings for <%- fileName %></h5>
+<h4>Drawing Settings</h4>
 
 <form>
-    <label for="textSize">Text Size</label>
-    <input type="range" name="textSize" min="20" max="100" step="1" value="50" />
 
     <label for="fontType">Select Font</label>
     <select name="fontType">
@@ -16,21 +14,35 @@
         <option value="Ubuntu">Ubuntu</option>
     </select>
 
-    <label for="wordLimit">Word Limit (default is 50 words)</label>
-    <input type="range" name="wordLimit" min="3" max="250" step="1" value="50" />
+    <br /><br />
 
-    <label for="cloudSpread">Cloud Spread</label>
-    <input type="range" name="cloudSpread" min="100" max="500" step="10" value="150" />
+    <label for="textSize">Font Size</label>
+    <input type="range" name="textSize" min="20" max="100" step="1" value="50" />
 
-    <label for="omittedWords">Words to Omit (by default, 'a', 'the', and 'and' are omitted). Separate words to omit with a space.</label>
-    <input type="text" name="omittedWords" />
+    <br />
 
+    <label for="fontColor">Font Color</label>
     <div class="input-group color-select-area">
         <input type="text" value="#000000" name="fontColor" class="form-control" />
         <span class="input-group-addon"><i></i></span>
     </div>
 
-    <br>
+    <br />
+
+    <label for="wordLimit">Word Limit (default is 50 words)</label>
+    <input type="range" name="wordLimit" min="3" max="250" step="1" value="50" />
+
+    <br />
+
+    <label for="cloudSpread">Cloud Spread</label>
+    <input type="range" name="cloudSpread" min="100" max="500" step="10" value="150" />
+
+    <br />
+
+    <label for="omittedWords">Words to Omit. Separate words to omit with a space.</label>
+    <input type="text" name="omittedWords" />
+
+    <br /><br />
 
     <input type="submit">
     <!--<button class="btn js-drawCloud">Draw a Word Cloud</button>-->

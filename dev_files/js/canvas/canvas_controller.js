@@ -196,9 +196,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                             mid4.x > obj.maxX || mid4.x < obj.minX || mid4.y > obj.maxY || mid4.y < obj.minY
                         ){
 
-                            /*val.xCoord = randX;
-                            val.yCoord = randY;
-                            val.rot = randRot;*/
+                            return;
 
                         } else {
 
