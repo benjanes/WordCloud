@@ -11,6 +11,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             var userOmits = settings.omittedWords.split(' ');
             var defaultOmits = ['a', 'the', 'and'];
             var omits = $.merge(defaultOmits, userOmits);
+            var font = settings.fontType;
 
             var wordList;
             if ( typeof model.attributes.fileWords === 'string' ){
@@ -328,7 +329,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             };
 
 
-            var transformedList = transformData(wordList, textSize, wordLimit, omits);
+            var transformedList = transformData(wordList, textSize, wordLimit, omits, font);
             var drawingCoords = findDrawingCoords(transformedList);
             drawWordCloud(drawingCoords, canvasDimensions);
 
