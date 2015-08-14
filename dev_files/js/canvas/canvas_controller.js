@@ -2,7 +2,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
     Canvas.Controller = {
         drawCloud: function(model, settings) {
-            var canvasView = new Canvas.Wordcloud();
+            var canvasView = new Canvas.Wordcloud({model: model});
 
             WordCloud.regions.canvas.show(canvasView);
 

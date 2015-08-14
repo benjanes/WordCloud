@@ -10,14 +10,15 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
     Canvas.Wordcloud = Marionette.ItemView.extend({
         template: 'canvas',
-
+        className: 'canvas-container',
         events: {
-            'click button.js-redraw' : 'redrawCanvas'
+            'click a#download-image' : 'downloadImage'
         },
 
-        redrawCanvas: function(){
-            // trigger a redrawing of the canvas with the same model and settings
-            console.log('redraw triggered');
+        downloadImage: function(){
+            var canvas = document.getElementById('word-cloud'); //$('#word-cloud');
+            var dataURL = canvas.toDataURL('image/png');
+            this.$el.find('a#download-image').attr('href', dataURL);
         }
     });
 

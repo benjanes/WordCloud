@@ -1,12 +1,46 @@
 @import bootstrap-custom
+$primary-color: #1C1C2F
+
+html, body
+    min-height: 100vh
+    background-color: #F5F5F5
+    overflow: hidden
 
 header
-    background-color: #1C1C2F
+    background-color: $primary-color
     color: #FFFFE5
 
-.left-col
-    border-right: 2px solid #1C1C2F
-    overflow: hidden
+.header-row
+    display: table
+
+.header-left
+    display: table-cell
+    float: none
+
+.header-right
+    display: table-cell
+    float: none
+    text-align: right
+
+.selectedfile-container
+    display: inline-block
+    font-size: 18px
+
+.selected-file
+    display: inline-block
+    padding: 6px 8px 10px 8px
+    border-radius: 3px 3px 0 0
+    background-color: #F5F5F5
+    color: $primary-color
+
+.left-col:before
+    content: ''
+    background-color: $primary-color
+    position: absolute
+    width: 2px
+    right: 0
+    height: 100%
+    min-height: 100vh
 
 .list-container
     padding-top: 1em
@@ -17,11 +51,11 @@ header
 
 .settings-container:before
     content: ''
-    background-color: #1C1C2F
+    background-color: $primary-color
     height: 2px
     position: absolute
     width: 150%
-    left: -25%
+    right: -1em
     top: 0
 
 .btn-file-input
@@ -38,6 +72,17 @@ header
     opacity: 0
     display: block
     cursor: inherit
+
+.canvas-container
+    padding-top: 1em
+
+.download-button
+    display: inline-block
+
+.word-cloud-canvas
+    display: block
+    margin-top: 1em
+    background-color: #fff
 
 .selected
     background-color: yellow
