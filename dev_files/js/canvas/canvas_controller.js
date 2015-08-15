@@ -17,6 +17,8 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             var fontRGB = hexToRgb(settings.fontColor);
             var fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
 
+            var allowOverlap = settings.allowOverlap;
+
             var wordList;
             if ( typeof model.attributes.fileWords === 'string' ){
                 wordList = model.attributes.fileWords.split(',');
@@ -211,74 +213,58 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                         }
                     };
 
-                    var testCoordinate = function(testArea, occupiedArea) {
-
-                        if (testArea.minX > occupiedArea.maxX || testArea.minX < occupiedArea.minX || testArea.maxY > occupiedArea.maxY || testArea.maxY < occupiedArea.minY &&
-                            testArea.minX > occupiedArea.maxX || testArea.minX < occupiedArea.minX || testArea.minY > occupiedArea.maxY || testArea.minY < occupiedArea.minY &&
-                            testArea.maxX > occupiedArea.maxX || testArea.maxX < occupiedArea.minX || testArea.maxY > occupiedArea.maxY || testArea.maxY < occupiedArea.minY &&
-                            testArea.maxX > occupiedArea.maxX || testArea.maxX < occupiedArea.minX || testArea.minY > occupiedArea.maxY || testArea.minY < occupiedArea.minY &&
-                            testArea.mid1.x > occupiedArea.maxX || testArea.mid1.x < occupiedArea.minX || testArea.mid1.y > occupiedArea.maxY || testArea.mid1.y < occupiedArea.minY &&
-                            testArea.mid2.x > occupiedArea.maxX || testArea.mid2.x < occupiedArea.minX || testArea.mid2.y > occupiedArea.maxY || testArea.mid2.y < occupiedArea.minY &&
-                            testArea.mid3.x > occupiedArea.maxX || testArea.mid3.x < occupiedArea.minX || testArea.mid3.y > occupiedArea.maxY || testArea.mid3.y < occupiedArea.minY &&
-                            testArea.mid4.x > occupiedArea.maxX || testArea.mid4.x < occupiedArea.minX || testArea.mid4.y > occupiedArea.maxY || testArea.mid4.y < occupiedArea.minY
-                        ){
-
-                            // if these conditions are met,
-                            // 1. stash the passing values
-                            // 2. increment a test value
-                            // 3. pass this to the test loop function
-
-                        } else {
-
-
-                        }
-
-                    };
-
                     var testLoop = function(){
                         var testArea = newXY();
 
-                        if (occupiedZones.length > 0) {
+                        if(!allowOverlap) {
+                            if (occupiedZones.length > 0) {
 
-                            for (var i = 0; i < occupiedZones.length; i++) {
+                                for (var i = 0; i < occupiedZones.length; i++) {
 
-                                if ((testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
-                                    (testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.minY > occupiedZones[i].maxY || testArea.minY < occupiedZones[i].minY) &&
-                                    (testArea.maxX > occupiedZones[i].maxX || testArea.maxX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
-                                    (testArea.maxX > occupiedZones[i].maxX || testArea.maxX < occupiedZones[i].minX || testArea.minY > occupiedZones[i].maxY || testArea.minY < occupiedZones[i].minY) &&
-                                    (testArea.mid1.x > occupiedZones[i].maxX || testArea.mid1.x < occupiedZones[i].minX || testArea.mid1.y > occupiedZones[i].maxY || testArea.mid1.y < occupiedZones[i].minY) &&
-                                    (testArea.mid2.x > occupiedZones[i].maxX || testArea.mid2.x < occupiedZones[i].minX || testArea.mid2.y > occupiedZones[i].maxY || testArea.mid2.y < occupiedZones[i].minY) &&
-                                    (testArea.mid3.x > occupiedZones[i].maxX || testArea.mid3.x < occupiedZones[i].minX || testArea.mid3.y > occupiedZones[i].maxY || testArea.mid3.y < occupiedZones[i].minY) &&
-                                    (testArea.mid4.x > occupiedZones[i].maxX || testArea.mid4.x < occupiedZones[i].minX || testArea.mid4.y > occupiedZones[i].maxY || testArea.mid4.y < occupiedZones[i].minY)
-                                ) {
+                                    if ((testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
+                                        (testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.minY > occupiedZones[i].maxY || testArea.minY < occupiedZones[i].minY) &&
+                                        (testArea.maxX > occupiedZones[i].maxX || testArea.maxX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
+                                        (testArea.maxX > occupiedZones[i].maxX || testArea.maxX < occupiedZones[i].minX || testArea.minY > occupiedZones[i].maxY || testArea.minY < occupiedZones[i].minY) &&
+                                        (testArea.mid1.x > occupiedZones[i].maxX || testArea.mid1.x < occupiedZones[i].minX || testArea.mid1.y > occupiedZones[i].maxY || testArea.mid1.y < occupiedZones[i].minY) &&
+                                        (testArea.mid2.x > occupiedZones[i].maxX || testArea.mid2.x < occupiedZones[i].minX || testArea.mid2.y > occupiedZones[i].maxY || testArea.mid2.y < occupiedZones[i].minY) &&
+                                        (testArea.mid3.x > occupiedZones[i].maxX || testArea.mid3.x < occupiedZones[i].minX || testArea.mid3.y > occupiedZones[i].maxY || testArea.mid3.y < occupiedZones[i].minY) &&
+                                        (testArea.mid4.x > occupiedZones[i].maxX || testArea.mid4.x < occupiedZones[i].minX || testArea.mid4.y > occupiedZones[i].maxY || testArea.mid4.y < occupiedZones[i].minY)
+                                    ) {
 
-                                    if (i === occupiedZones.length - 1) {
+                                        if (i === occupiedZones.length - 1) {
 
-                                        val.xCoord = testArea.x;
-                                        val.yCoord = testArea.y;
-                                        val.rot = randRot;
+                                            val.xCoord = testArea.x;
+                                            val.yCoord = testArea.y;
+                                            val.rot = randRot;
 
-                                        addOccupiedZone(testArea.x, testArea.y);
-                                        dimensionSpan = SPAN;
-                                        break;
+                                            addOccupiedZone(testArea.x, testArea.y);
+                                            dimensionSpan = SPAN;
+                                            break;
+                                        } else {
+                                            continue;
+                                        }
+
                                     } else {
-                                        continue;
-                                    }
 
-                                } else {
+                                        testIncrementer++;
+                                        if (testIncrementer >= 1000) {
+                                            dimensionSpan += 10;
+                                        }
+                                        return testLoop();
 
-                                    testIncrementer++;
-                                    if (testIncrementer >= 50) {
-                                        dimensionSpan += 20;
                                     }
-                                    return testLoop();
 
                                 }
 
+                            } else {
+
+                                val.xCoord = testArea.x;
+                                val.yCoord = testArea.y;
+                                val.rot = randRot;
+
+                                addOccupiedZone(testArea.x, testArea.y);
                             }
-
                         } else {
-
                             val.xCoord = testArea.x;
                             val.yCoord = testArea.y;
                             val.rot = randRot;
@@ -351,7 +337,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             var drawingCoords = findDrawingCoords(transformedList, cloudSpread);
             drawWordCloud(drawingCoords, canvasDimensions, fontColor);
 
-            //console.log(drawingCoords);
         }
     };
 
