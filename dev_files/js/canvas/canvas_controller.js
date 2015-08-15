@@ -245,8 +245,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                         if (occupiedZones.length > 0) {
 
-                            //newXY();
-
                             for (var i = 0; i < occupiedZones.length; i++) {
 
                                 testCoordinate(testCoords, occupiedZones[i]);
@@ -264,8 +262,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                             }
 
                         } else {
-
-                            //newXY();
 
                             val.xCoord = testCoords.x;
                             val.yCoord = testCoords.y;
