@@ -16,7 +16,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
             var fontRGB = hexToRgb(settings.fontColor);
             var fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
-            console.log(fontColor);
 
             var wordList;
             if ( typeof model.attributes.fileWords === 'string' ){
@@ -54,16 +53,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 } : null;
             }
 
-            // take this out and do properly!
-            function checkArray(value, array) {
-                for (var i = 0; i < array.length; i++) {
-                    if (array[i] === value) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             // transform the array of words into frequency data set
             var transformData = function(array, fontPx, limit, omits, font) {
                 var wordFreqData = [];
@@ -84,7 +73,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                 var toCountData = function(val, ind, arr) {
                     if (!checkValue(val, wordFreqData)) {
-                        if (checkArray(val, omits)) {
+                        if (omits.indexOf(val) !== -1) {
                             return false;
                         } else {
                             var newWord = new Word(val);
@@ -149,7 +138,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                 // 1. select a random point for which to draw from that isn't in the occupied space
                 var selectPoint = function(val, ind, arr){
-                    var randX, randY, randRot, dimensionSpan, SPAN;
+                    var randRot, dimensionSpan, SPAN;
                     // random numbers based around centering the image at 0,0
                     randRot = (1 - Math.floor(Math.random() * 3)) * 90;
 
@@ -157,90 +146,102 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     dimensionSpan = SPAN;
 
                     var newXY = function(){
-                        randX = Math.floor((0.5 - Math.random()) * dimensionSpan);
-                        randY = Math.floor((0.5 - Math.random()) * dimensionSpan);
+                        var randX = Math.floor((0.5 - Math.random()) * dimensionSpan);
+                        var randY = Math.floor((0.5 - Math.random()) * dimensionSpan);
+
+                        return calcTestCoords(randX, randY);
                     };
 
-                    var testCoordinate = function(testX, testY, obj) {
-                        var minX, maxX, minY, maxY;
+                    var calcTestCoords = function(testX, testY) {
+                        var testCoords = {};
+
+                        testCoords.x = testX;
+                        testCoords.y = testY;
 
                         if (randRot === -90) {
-                            minX = testX - val.fontHeight;
-                            maxX = testX;
-                            minY = testY - val.fillWidth;
-                            maxY = testY;
+                            testCoords.minX = testX - val.fontHeight;
+                            testCoords.maxX = testX;
+                            testCoords.minY = testY - val.fillWidth;
+                            testCoords.maxY = testY;
                         } else if (randRot === 90) {
-                            minX = testX;
-                            maxX = testX + val.fontHeight;
-                            minY = testY;
-                            maxY = testY + val.fillWidth;
+                            testCoords.minX = testX;
+                            testCoords.maxX = testX + val.fontHeight;
+                            testCoords.minY = testY;
+                            testCoords.maxY = testY + val.fillWidth;
                         } else {
-                            minX = testX;
-                            maxX = testX + val.fillWidth;
-                            minY = testY - val.fontHeight;
-                            maxY = testY;
+                            testCoords.minX = testX;
+                            testCoords.maxX = testX + val.fillWidth;
+                            testCoords.minY = testY - val.fontHeight;
+                            testCoords.maxY = testY;
                         }
 
-                        var mid1 = { x: minX, y: (maxY - minY) / 2 };
-                        var mid2 = { x: (maxX - minX) / 2, y: minY };
-                        var mid3 = { x: maxX, y: (maxY - minY) / 2 };
-                        var mid4 = { x: (maxX - minX) / 2, y: maxY };
+                        testCoords.mid1 = { x: testCoords.minX, y: (testCoords.maxY - testCoords.minY) / 2 };
+                        testCoords.mid2 = { x: (testCoords.maxX - testCoords.minX) / 2, y: testCoords.minY };
+                        testCoords.mid3 = { x: testCoords.maxX, y: (testCoords.maxY - testCoords.minY) / 2 };
+                        testCoords.mid4 = { x: (testCoords.maxX - testCoords.minX) / 2, y: testCoords.maxY };
 
-                        if ( minX > obj.maxX || minX < obj.minX || maxY > obj.maxY || maxY < obj.minY &&
-                            minX > obj.maxX || minX < obj.minX || minY > obj.maxY || minY < obj.minY &&
-                            maxX > obj.maxX || maxX < obj.minX || maxY > obj.maxY || maxY < obj.minY &&
-                            maxX > obj.maxX || maxX < obj.minX || minY > obj.maxY || minY < obj.minY &&
-                            mid1.x > obj.maxX || mid1.x < obj.minX || mid1.y > obj.maxY || mid1.y < obj.minY &&
-                            mid2.x > obj.maxX || mid2.x < obj.minX || mid2.y > obj.maxY || mid2.y < obj.minY &&
-                            mid3.x > obj.maxX || mid3.x < obj.minX || mid3.y > obj.maxY || mid3.y < obj.minY &&
-                            mid4.x > obj.maxX || mid4.x < obj.minX || mid4.y > obj.maxY || mid4.y < obj.minY
+                        return testCoords;
+                    };
+
+                    var addOccupiedZone = function(x, y){
+                        if (randRot === -90) {
+                            occupiedZones.push(new OccupiedZone(
+                                x - val.fontHeight,
+                                x,
+                                y - val.fillWidth,
+                                y,
+                                val.word
+                            ));
+                        } else if (randRot === 90) {
+                            occupiedZones.push(new OccupiedZone(
+                                x,
+                                x + val.fontHeight,
+                                y,
+                                y + val.fillWidth,
+                                val.word
+                            ));
+                        } else {
+                            occupiedZones.push(new OccupiedZone(
+                                x,
+                                x + val.fillWidth,
+                                y - val.fontHeight,
+                                y,
+                                val.word
+                            ));
+                        }
+                    };
+
+                    var testCoordinate = function(testArea, occupiedArea) {
+
+                        if (testArea.minX > occupiedArea.maxX || testArea.minX < occupiedArea.minX || testArea.maxY > occupiedArea.maxY || testArea.maxY < occupiedArea.minY &&
+                            testArea.minX > occupiedArea.maxX || testArea.minX < occupiedArea.minX || testArea.minY > occupiedArea.maxY || testArea.minY < occupiedArea.minY &&
+                            testArea.maxX > occupiedArea.maxX || testArea.maxX < occupiedArea.minX || testArea.maxY > occupiedArea.maxY || testArea.maxY < occupiedArea.minY &&
+                            testArea.maxX > occupiedArea.maxX || testArea.maxX < occupiedArea.minX || testArea.minY > occupiedArea.maxY || testArea.minY < occupiedArea.minY &&
+                            testArea.mid1.x > occupiedArea.maxX || testArea.mid1.x < occupiedArea.minX || testArea.mid1.y > occupiedArea.maxY || testArea.mid1.y < occupiedArea.minY &&
+                            testArea.mid2.x > occupiedArea.maxX || testArea.mid2.x < occupiedArea.minX || testArea.mid2.y > occupiedArea.maxY || testArea.mid2.y < occupiedArea.minY &&
+                            testArea.mid3.x > occupiedArea.maxX || testArea.mid3.x < occupiedArea.minX || testArea.mid3.y > occupiedArea.maxY || testArea.mid3.y < occupiedArea.minY &&
+                            testArea.mid4.x > occupiedArea.maxX || testArea.mid4.x < occupiedArea.minX || testArea.mid4.y > occupiedArea.maxY || testArea.mid4.y < occupiedArea.minY
                         ){
 
-                            return;
+                            // if these conditions are met,
+                            // 1. stash the passing values
+                            // 2. increment a test value
+                            // 3. pass this to the test loop function
 
                         } else {
 
                             testIncrementer++;
-                            if (testIncrementer >= 30) {
-                                dimensionSpan += 30;
+                            if (testIncrementer >= 10) {
+                                dimensionSpan += 60;
                             }
+                            //newXY();
                             return testLoop();
                         }
 
-
-                    };
-
-
-                    var addOccupiedZone = function(){
-                        if (randRot === -90) {
-                            occupiedZones.push(new OccupiedZone(
-                                randX - val.fontHeight,
-                                randX,
-                                randY - val.fillWidth,
-                                randY,
-                                val.word
-                            ));
-                        } else if (randRot === 90) {
-                            occupiedZones.push(new OccupiedZone(
-                                randX,
-                                randX + val.fontHeight,
-                                randY,
-                                randY + val.fillWidth,
-                                val.word
-                            ));
-                        } else {
-                            occupiedZones.push(new OccupiedZone(
-                                randX,
-                                randX + val.fillWidth,
-                                randY - val.fontHeight,
-                                randY,
-                                val.word
-                            ));
-                        }
                     };
 
                     var testLoop = function(){
-                        newXY();
+                        var testCoords = newXY();
 
                         if (occupiedZones.length > 0) {
 
@@ -248,15 +249,15 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                             for (var i = 0; i < occupiedZones.length; i++) {
 
-                                testCoordinate(randX, randY, occupiedZones[i]);
+                                testCoordinate(testCoords, occupiedZones[i]);
 
                                 if (i === occupiedZones.length - 1) {
 
-                                    val.xCoord = randX;
-                                    val.yCoord = randY;
+                                    val.xCoord = testCoords.x;
+                                    val.yCoord = testCoords.y;
                                     val.rot = randRot;
 
-                                    addOccupiedZone();
+                                    addOccupiedZone(testCoords.x, testCoords.y);
                                     dimensionSpan = SPAN;
                                     break;
                                 }
@@ -266,11 +267,11 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                             //newXY();
 
-                            val.xCoord = randX;
-                            val.yCoord = randY;
+                            val.xCoord = testCoords.x;
+                            val.yCoord = testCoords.y;
                             val.rot = randRot;
 
-                            addOccupiedZone();
+                            addOccupiedZone(testCoords.x, testCoords.y);
                         }
                     };
 
@@ -280,28 +281,20 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                 array.forEach(selectPoint);
 
-                occupiedZones.sort(function(a, b){
-                    return a.minX - b.minX;
-                });
-
+                // find smallest x in occupied area
+                occupiedZones.sort(function(a, b) { return a.minX - b.minX; });
                 var xCanvasOrigin = Math.floor(occupiedZones[0].minX);
 
-                occupiedZones.sort(function(a, b){
-                    return a.minY - b.minY;
-                });
-
+                // find smallest y in occupied area
+                occupiedZones.sort(function(a, b){ return a.minY - b.minY; });
                 var yCanvasOrigin = Math.floor(occupiedZones[0].minY);
 
-                occupiedZones.sort(function(a, b){
-                    return b.maxX - a.maxX;
-                });
-
+                // find largest x, calculate width of canvas
+                occupiedZones.sort(function(a, b){ return b.maxX - a.maxX; });
                 var canvasWidth = Math.ceil(occupiedZones[0].maxX) - xCanvasOrigin;
 
-                occupiedZones.sort(function(a, b){
-                    return b.maxY - a.maxY;
-                });
-
+                // find largest y, calculate height of canvas
+                occupiedZones.sort(function(a, b){ return b.maxY - a.maxY; });
                 var canvasHeight = Math.ceil(occupiedZones[0].maxY) - yCanvasOrigin;
 
                 canvasDimensions = {
@@ -310,8 +303,6 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     width: canvasWidth,
                     height: canvasHeight
                 };
-
-                //console.log(occupiedZones);
 
                 return array;
             };
