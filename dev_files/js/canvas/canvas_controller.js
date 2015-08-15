@@ -230,44 +230,60 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                         } else {
 
-                            testIncrementer++;
-                            if (testIncrementer >= 10) {
-                                dimensionSpan += 60;
-                            }
-                            //newXY();
-                            return testLoop();
+
                         }
 
                     };
 
                     var testLoop = function(){
-                        var testCoords = newXY();
+                        var testArea = newXY();
 
                         if (occupiedZones.length > 0) {
 
                             for (var i = 0; i < occupiedZones.length; i++) {
 
-                                testCoordinate(testCoords, occupiedZones[i]);
+                                if ((testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
+                                    (testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.minY > occupiedZones[i].maxY || testArea.minY < occupiedZones[i].minY) &&
+                                    (testArea.maxX > occupiedZones[i].maxX || testArea.maxX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
+                                    (testArea.maxX > occupiedZones[i].maxX || testArea.maxX < occupiedZones[i].minX || testArea.minY > occupiedZones[i].maxY || testArea.minY < occupiedZones[i].minY) &&
+                                    (testArea.mid1.x > occupiedZones[i].maxX || testArea.mid1.x < occupiedZones[i].minX || testArea.mid1.y > occupiedZones[i].maxY || testArea.mid1.y < occupiedZones[i].minY) &&
+                                    (testArea.mid2.x > occupiedZones[i].maxX || testArea.mid2.x < occupiedZones[i].minX || testArea.mid2.y > occupiedZones[i].maxY || testArea.mid2.y < occupiedZones[i].minY) &&
+                                    (testArea.mid3.x > occupiedZones[i].maxX || testArea.mid3.x < occupiedZones[i].minX || testArea.mid3.y > occupiedZones[i].maxY || testArea.mid3.y < occupiedZones[i].minY) &&
+                                    (testArea.mid4.x > occupiedZones[i].maxX || testArea.mid4.x < occupiedZones[i].minX || testArea.mid4.y > occupiedZones[i].maxY || testArea.mid4.y < occupiedZones[i].minY)
+                                ) {
 
-                                if (i === occupiedZones.length - 1) {
+                                    if (i === occupiedZones.length - 1) {
 
-                                    val.xCoord = testCoords.x;
-                                    val.yCoord = testCoords.y;
-                                    val.rot = randRot;
+                                        val.xCoord = testArea.x;
+                                        val.yCoord = testArea.y;
+                                        val.rot = randRot;
 
-                                    addOccupiedZone(testCoords.x, testCoords.y);
-                                    dimensionSpan = SPAN;
-                                    break;
+                                        addOccupiedZone(testArea.x, testArea.y);
+                                        dimensionSpan = SPAN;
+                                        break;
+                                    } else {
+                                        continue;
+                                    }
+
+                                } else {
+
+                                    testIncrementer++;
+                                    if (testIncrementer >= 50) {
+                                        dimensionSpan += 20;
+                                    }
+                                    return testLoop();
+
                                 }
+
                             }
 
                         } else {
 
-                            val.xCoord = testCoords.x;
-                            val.yCoord = testCoords.y;
+                            val.xCoord = testArea.x;
+                            val.yCoord = testArea.y;
                             val.rot = randRot;
 
-                            addOccupiedZone(testCoords.x, testCoords.y);
+                            addOccupiedZone(testArea.x, testArea.y);
                         }
                     };
 
