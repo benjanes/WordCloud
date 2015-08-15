@@ -4,16 +4,6 @@ WordCloud.module('Settings', function(Settings, WordCloud, Backbone, Marionette,
         template: 'settings',
         className: 'settings-container',
 
-        events: {
-            'submit form' : 'drawCloud'
-        },
-
-        drawCloud: function(e){
-            e.preventDefault();
-            var data = Backbone.Syphon.serialize(this);
-            WordCloud.trigger('cloud:draw', this.model, data);
-        },
-
         onRender: function(){
             this.$el.find('.color-select-area').colorpicker();
         }

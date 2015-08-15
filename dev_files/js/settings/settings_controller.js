@@ -8,6 +8,11 @@ WordCloud.module('Settings', function(Settings, WordCloud, Backbone, Marionette,
             });
 
             WordCloud.regions.settings.show(settingsView);
+        },
+
+        getSettings: function(){
+            var settings = Backbone.Syphon.serialize($('form'));
+            return settings;
         }
 
     };

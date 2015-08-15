@@ -17,12 +17,15 @@ WordCloud.on('before:start', function(){
 
 
 WordCloud.on('file:select', function(model){
-    WordCloud.regions.canvas.show( new WordCloud.Canvas.Instructions2() );
+    WordCloud.regions.canvas.show( new WordCloud.Canvas.Instructions2({
+        model: model
+    }) );
     WordCloud.Selectedfile.Controller.showFile(model);
     WordCloud.Settings.Controller.showSettings(model);
 });
 
-WordCloud.on('cloud:draw', function(model, settings){
+WordCloud.on('cloud:draw', function(model){
+    var settings = WordCloud.Settings.Controller.getSettings();
     WordCloud.Canvas.Controller.drawCloud(model, settings);
 });
 
