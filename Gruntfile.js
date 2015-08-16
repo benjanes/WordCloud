@@ -70,8 +70,9 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [
-                    {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html', '!plugins/**'], dest: 'app/assets/'},
+                    {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html', '!plugins/**', '!favicon.ico'], dest: 'app/assets/'},
                     {expand: true, cwd: 'dev_files/', src: 'index.html', dest: 'app/'},
+                    {expand: true, cwd: 'dev_files/', src: 'favicon.ico', dest: 'app/'},
                     // bootstrap glyphicons
                     {expand: true, cwd: 'bower_components/bootstrap-sass/assets/', src: 'fonts/', dest: 'app/assets/'},
                     // colorpicker plugin
