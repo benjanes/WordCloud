@@ -18,6 +18,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             var fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
 
             var allowOverlap = settings.allowOverlap;
+            var randomizeColors = settings.randomColors;
 
             var wordList;
             if ( typeof model.attributes.fileWords === 'string' ){
@@ -56,7 +57,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             }
 
             // transform the array of words into frequency data set
-            var transformData = function(array, fontPx, limit, omits, font) {
+            var transformData = function(array, fontPx, limit, omits, font, fontColor, randomColors) {
                 var wordFreqData = [];
                 var wordList = [];
                 var fontSize = fontPx ? fontPx : 30;
@@ -96,9 +97,21 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 };
 
                 // calc the dimensions taken up by each word based on font size and string length
-                var calcDimensions = function(val, ind, arr){
+                var calcDimensions = function(val, ind, arr) {
                     ctx.font = val.font;
                     val.fillWidth = ctx.measureText(val.word).width;
+                };
+
+                var assignColor = function(val, ind, arr) {
+                    function newColor(){
+                        return Math.floor((Math.random() * 256));
+                    }
+
+                    if (!randomColors) {
+                        val.color = fontColor;
+                    } else {
+                        val.color = 'rgb('+newColor()+','+newColor()+','+newColor()+')';
+                    }
                 };
 
                 // Convert the array of objects with a word value and
@@ -120,6 +133,8 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 wordFreqData.map(toRelSizing);
                 // calc the dimensions for each word
                 wordFreqData.map(calcDimensions);
+                // assign the color
+                wordFreqData.map(assignColor);
 
                 return wordFreqData;
             };
@@ -247,7 +262,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                                     } else {
 
                                         testIncrementer++;
-                                        if (testIncrementer >= 1000) {
+                                        if (testIncrementer >= 10000) {
                                             dimensionSpan += 10;
                                         }
                                         return testLoop();
@@ -306,13 +321,13 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             };
 
             // use the drawing coordinates to draw the word cloud
-            var drawWordCloud = function(coordsArray, canvasSizingObj, fontColor) {
+            var drawWordCloud = function(coordsArray, canvasSizingObj) {
 
                 var drawWord = function(word) {
                     ctx.translate( word.xCoord, word.yCoord ); // the x, y coords for this word
                     ctx.rotate( word.rot * Math.PI / 180 ); // the rot
                     ctx.font = word.font;
-                    //ctx.fillStyle = fontColor;
+                    ctx.fillStyle = word.color;
                     ctx.fillText(word.word, 0, 0);
                     ctx.rotate( -(word.rot) * Math.PI / 180 );
                     ctx.translate( -(word.xCoord), -(word.yCoord) );
@@ -327,15 +342,14 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 canvas.width = canvasSizingObj.width + 10;
 
                 ctx.translate(xTrans, yTrans);
-                ctx.fillStyle = fontColor;
                 ctx.save();
                 coordsArray.forEach(drawWord);
             };
 
 
-            var transformedList = transformData(wordList, textSize, wordLimit, omits, font);
+            var transformedList = transformData(wordList, textSize, wordLimit, omits, font, fontColor, randomizeColors);
             var drawingCoords = findDrawingCoords(transformedList, cloudSpread);
-            drawWordCloud(drawingCoords, canvasDimensions, fontColor);
+            drawWordCloud(drawingCoords, canvasDimensions);
 
         }
     };
