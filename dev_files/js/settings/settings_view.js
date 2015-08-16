@@ -5,6 +5,8 @@ WordCloud.module('Settings', function(Settings, WordCloud, Backbone, Marionette,
         className: 'settings-container',
 
         onRender: function(){
+            this.$el.css('display', 'none').fadeIn();
+            this.$el.find('.js-tooltip').tooltip();
             this.$el.find('.color-select-area').colorpicker();
         }
     });

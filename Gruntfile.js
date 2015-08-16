@@ -9,7 +9,8 @@ module.exports = function(grunt) {
         'bower_components/marionette/lib/backbone.marionette.js',
         'bower_components/backbone.localstorage/backbone.localStorage.js',
         'bower_components/backbone.syphon/lib/backbone.syphon.js',
-        'bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js'
+        'bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
+        'bower_components/bootstrap-sass/assets/javascripts/bootstrap/tooltip.js'
     ];
 
     var jsConfig = [

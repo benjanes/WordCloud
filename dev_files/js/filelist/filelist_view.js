@@ -9,6 +9,10 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
             'click button.js-select' : 'selectFile'
         },
 
+        onRender: function(){
+            this.$el.find('button').tooltip();
+        },
+
         deleteFile: function(e){
             e.stopPropagation();
             this.trigger('file:delete', this.model);
@@ -16,9 +20,22 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
 
         selectFile: function(e){
             e.stopPropagation();
-            $('.selected').removeClass('selected');
-            this.$el.addClass('selected');
-            this.trigger('file:select', this.model);
+
+            if (this.$el.hasClass('selected')){
+                e.preventDefault();
+            } else {
+                $('.selected').removeClass('selected');
+                $('button.js-select').tooltip();
+                this.$el.addClass('selected');
+                this.$el.find('button.js-select').tooltip('destroy');
+                this.trigger('file:select', this.model);
+            }
+
+        },
+
+        noAction: function(e){
+            e.stopPropagation();
+            e.preventDefault();
         },
 
         remove: function(){
