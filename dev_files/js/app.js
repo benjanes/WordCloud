@@ -8,13 +8,18 @@ WordCloud.on('before:start', function(){
             filelist: '#filelist-region',
             canvas: '#canvas-region',
             selectedFile: '#selectedfile-region',
-            settings: '#settings-region'
+            settings: '#settings-region',
+            load: '#load-region'
         }
     });
 
     WordCloud.regions = new RegionContainer();
 });
 
+//WordCloud.on('file:load', function(newFile){
+//    console.log('hi');
+//    WordCloud.
+//});
 
 WordCloud.on('file:select', function(model){
     WordCloud.regions.canvas.show( new WordCloud.Canvas.Instructions2({
@@ -36,5 +41,3 @@ WordCloud.on('start', function(){
     }
 
 });
-
-

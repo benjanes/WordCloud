@@ -34,49 +34,15 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
         childView: Filelist.File,
         childViewContainer: 'ol',
 
-        events: {
-            'change input' : 'clickedInput'
+        initialize: function(){
+            this.listenTo(WordCloud, 'file:load', this.addFile);
         },
 
-        clickedInput: function(e){
+        addFile: function(newFile){
+            this.collection.add(newFile);
+            newFile.save();
 
-            var file = e.target.files[0];
-
-            if (!file) {
-                alert('File loading failed. Please give it another shot.');
-            } else if (!file.type.match('text.*')) {
-                alert(file.name + ' is not a text file. Please choose a text file to load!');
-            } else {
-
-                var reader = new FileReader();
-                reader.readAsText(file);
-
-                var passedThis = this;
-
-                reader.onload = function(e) {
-
-                    var fileName = file.name;
-
-                    var result = e.target.result;
-
-                    var contentsArray = (result.split(' ')).filter(function(val){
-                        return val.charAt(0) !== '{' && val.indexOf('\\') === -1;
-                    });
-                    var fileWords = contentsArray.map(function(val){
-                        return val.replace(/\W/g, '').toLowerCase();
-                    });
-
-                    var newFile = new WordCloud.Wordlist.File({fileName: fileName, fileWords: fileWords});
-
-                    this.collection.add(newFile);
-                    newFile.save();
-
-                    return this;
-
-                }.bind(passedThis);
-
-            }
-
+            return this;
         }
 
     });

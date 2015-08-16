@@ -12,11 +12,16 @@ WordCloud.module('FileCollection', function(FileCollection, WordCloud, Backbone,
     _.extend(FileCollection.Controller.prototype, {
         start: function() {
             this.showInstructions();
+            this.showLoadButton();
             this.showFileList();
         },
 
         showInstructions: function(){
             WordCloud.regions.canvas.show( new WordCloud.Canvas.Instructions1() );
+        },
+
+        showLoadButton: function(){
+            WordCloud.regions.load.show( new WordCloud.Load.View() );
         },
 
         showFileList: function(){
@@ -35,7 +40,6 @@ WordCloud.module('FileCollection', function(FileCollection, WordCloud, Backbone,
                 filesView.on('childview:file:select', function(childView, model){
                     WordCloud.trigger('file:select', model);
                 });
-
 
                 WordCloud.regions.filelist.show(filesView);
             });

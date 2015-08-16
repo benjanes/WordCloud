@@ -21,6 +21,29 @@ header
     float: none
     text-align: right
 
+.app-title
+    display: inline-block
+
+.load-button
+    display: inline-block
+    margin-left: 1.5em
+
+.btn-file-input
+    position: relative
+    overflow: hidden
+    margin-top: -20px
+
+.btn-file-input input[type=file]
+    position: absolute
+    top: 0
+    right: 0
+    min-width: 100%
+    min-height: 100%
+    filter: alpha(opacity=0)
+    opacity: 0
+    display: block
+    cursor: inherit
+
 .selectedfile-container
     display: inline-block
     font-size: 20px
@@ -64,22 +87,6 @@ header
 
 .form-row
     margin-bottom: 1em
-
-
-.btn-file-input
-    position: relative
-    overflow: hidden
-
-.btn-file-input input[type=file]
-    position: absolute
-    top: 0
-    right: 0
-    min-width: 100%
-    min-height: 100%
-    filter: alpha(opacity=0)
-    opacity: 0
-    display: block
-    cursor: inherit
 
 .canvas-container
     padding-top: 1em
