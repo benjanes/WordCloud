@@ -8,14 +8,17 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
             var textSize = settings.textSize;
             var wordLimit = settings.wordLimit;
-            var userOmits = settings.omittedWords.split(' ');
-            var defaultOmits = ['a', 'the', 'and'];
-            var omits = $.merge(defaultOmits, userOmits);
+            var omits = settings.omittedWords.split(' ');
             var font = settings.fontType;
             var cloudSpread = settings.cloudSpread;
 
-            var fontRGB = hexToRgb(settings.fontColor);
-            var fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
+            var fontColor;
+            if(settings.fontColor.indexOf('#') !== -1){
+                var fontRGB = hexToRgb(settings.fontColor);
+                fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
+            } else {
+                fontColor = settings.fontColor;
+            }
 
             var allowOverlap = settings.allowOverlap;
             var randomizeColors = settings.randomColors;

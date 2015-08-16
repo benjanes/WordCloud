@@ -1,54 +1,71 @@
-<h4>Drawing Settings</h4>
-
 <form>
+    <h4>Font Settings</h4>
+    <hr class="heading-hr" />
 
-    <label for="fontType">Select Font</label>
-    <select name="fontType">
-        <option value="Arial">Arial</option>
-        <option value="Cabin">Cabin</option>
-        <option value="Lora">Lora</option>
-        <option value="Montserrat" class="option-mont">Montserrat</option>
-        <option value="Playfair Display">Playfair Display</option>
-        <option value="Raleway">Raleway</option>
-        <option value="Roboto Slab">Roboto Slab</option>
-        <option value="Ubuntu">Ubuntu</option>
-    </select>
+    <div class="row form-row">
 
-    <br /><br />
+        <section class="col-sm-6">
+            <label for="fontType">Font</label>
+            <select name="fontType">
+                <option value="Arial">Arial</option>
+                <option value="Cabin">Cabin</option>
+                <option value="Lora">Lora</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Playfair Display">Playfair Display</option>
+                <option value="Raleway">Raleway</option>
+                <option value="Roboto Slab">Roboto Slab</option>
+                <option value="Ubuntu">Ubuntu</option>
+            </select>
+        </section>
 
-    <label for="textSize">Font Size</label>
-    <input type="range" name="textSize" min="20" max="100" step="1" value="50" />
+        <section class="col-sm-6">
+            <label for="textSize">Font Size</label>
+            <input type="range" name="textSize" min="20" max="100" step="1" value="50" />
+        </section>
 
-    <br />
-
-    <label for="fontColor">Font Color</label>
-    <div class="input-group color-select-area">
-        <input type="text" value="#000000" name="fontColor" class="form-control" />
-        <span class="input-group-addon"><i></i></span>
     </div>
 
-    <br />
+    <div class="row form-row">
 
-    <input type="checkbox" name="randomColors"> Use random color for each word?<br />
+        <section class="col-sm-6">
+            <label for="fontColor">Font Color</label>
+            <div class="input-group color-select-area">
+                <input type="text" value="#000000" name="fontColor" class="form-control" />
+                <span class="input-group-addon"><i></i></span>
+            </div>
+        </section>
 
-    <br />
+        <section class="col-sm-6">
+            <label for="randomColors">Random Colors</label><br />
+            <input type="checkbox" name="randomColors"> Randomize font colors?
+        </section>
 
-    <label for="wordLimit">Word Limit (default is 50 words)</label>
-    <input type="range" name="wordLimit" min="3" max="250" step="1" value="50" />
+    </div>
 
-    <br />
+    <h4>Cloud Settings</h4>
+    <hr class="heading-hr" />
 
-    <label for="cloudSpread">Cloud Spread</label>
-    <input type="range" name="cloudSpread" min="100" max="500" step="10" value="150" />
+    <div class="row form-row">
 
-    <br />
+        <section class="col-sm-6">
+            <label for="wordLimit">Word Limit</label>
+            <input type="range" name="wordLimit" min="3" max="250" step="1" value="50" />
+        </section>
 
-    <input type="checkbox" name="allowOverlap"> Allow words to overlap?<br />
+        <section class="col-sm-6">
+            <label for="cloudSpread">Cloud Spread</label>
+            <input type="range" name="cloudSpread" min="100" max="500" step="10" value="150" />
+        </section>
 
-    <br />
+    </div>
 
-    <label for="omittedWords">Words to Omit. Separate words to omit with a space.</label>
-    <input type="text" name="omittedWords" />
+    <div class="form-row">
+        <input type="checkbox" name="allowOverlap" checked> Allow words to overlap?<br />
+    </div>
 
-    <br /><br />
+    <div class="form-row">
+        <label for="omittedWords">Words to Omit. Separate words with a space.</label>
+        <input type="text" name="omittedWords" />
+    </div>
+
 </form>

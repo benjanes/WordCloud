@@ -23,7 +23,7 @@ header
 
 .selectedfile-container
     display: inline-block
-    font-size: 18px
+    font-size: 20px
 
 .selected-file
     display: inline-block
@@ -32,34 +32,39 @@ header
     background-color: #F5F5F5
     color: $primary-color
 
-.left-col:before
-    content: ''
-    background-color: $primary-color
-    position: absolute
-    width: 2px
-    right: 0
-    height: 100%
-    min-height: 100vh
+.left-col
+    background-color: #fff
+    border-right: 2px solid $primary-color
+    overflow: hidden
+
+.heading-hr
+    box-shadow: 0 1px 1px 0 lighten($primary-color, 60%)
+    border-top: 1px solid lighten($primary-color, 80%)
+    margin: 5px 0 10px 0
 
 .list-container
-    padding-top: 1em
+    padding: 1em 0
+    position: relative
 
 .list-container li
     font-size: 1.1em
     margin-bottom: 0.4em
 
-.settings-container
-    position: relative
-    padding-top: 1em
-
-.settings-container:before
+.list-container:before
     content: ''
     background-color: $primary-color
     height: 2px
     position: absolute
     width: 150%
-    right: -1em
-    top: 0
+    right: -15px
+    bottom: 0
+
+.settings-container
+    position: relative
+
+.form-row
+    margin-bottom: 1em
+
 
 .btn-file-input
     position: relative
@@ -94,6 +99,3 @@ header
         cursor: initial
         background-color: #e6e6e6
         border-color: #adadad
-
-.option-mont
-    font-family: 'Montserrat'
