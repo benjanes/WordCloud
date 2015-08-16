@@ -32,6 +32,7 @@ WordCloud.module('Filelist', function(Filelist, WordCloud, Backbone, Marionette,
     Filelist.Files = Marionette.CompositeView.extend({
         template: 'fileitems',
         className: 'list-container control-panel-section',
+        tagName: 'section',
         childView: Filelist.File,
         childViewContainer: 'ol',
 
