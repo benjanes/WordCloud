@@ -2,69 +2,66 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
     Canvas.Controller = {
         drawCloud: function(model, settings) {
-            var canvasView = new Canvas.Wordcloud({model: model});
+            var canvasView, canvas, canvasDimensions,
+                wordList,
+                textSize, wordLimit, omits, font, cloudSpread, fontColor, allowOverlap, randomizeColors,
+                transformData, findDrawingCoords, drawWordCloud,
+                transformedData, drawingCoords;
 
+            // new canvas with the selected model
+            canvasView = new Canvas.Wordcloud({model: model});
+            // render the canvas template on the page
             WordCloud.regions.canvas.show(canvasView);
+            // get context on the canvas element
+            canvas = document.getElementById('word-cloud');
+            ctx = canvas.getContext('2d');
 
-            var textSize = settings.textSize;
-            var wordLimit = settings.wordLimit;
-            var omits = settings.omittedWords.split(' ');
-            var font = settings.fontType;
-            var cloudSpread = settings.cloudSpread;
-
-            var fontColor;
-            if(settings.fontColor.indexOf('#') !== -1){
-                var fontRGB = hexToRgb(settings.fontColor);
-                fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
-            } else {
-                fontColor = settings.fontColor;
-            }
-
-            var allowOverlap = settings.allowOverlap;
-            var randomizeColors = settings.randomColors;
-
-            var wordList;
+            // the raw list of words used to draw the word cloud, provided as an array
             if ( typeof model.attributes.fileWords === 'string' ){
                 wordList = model.attributes.fileWords.split(',');
             } else {
                 wordList = model.attributes.fileWords;
             }
 
-            var canvas = document.getElementById('word-cloud'),
-                ctx = canvas.getContext('2d');
+            // user defined settings
+            textSize = settings.textSize;
+            wordLimit = settings.wordLimit;
+            omits = settings.omittedWords.split(' ');
+            font = settings.fontType;
+            cloudSpread = settings.cloudSpread;
+            // set font color as either RGB or RGBA depending on what is passed in
+            if(settings.fontColor.indexOf('#') !== -1){
+                var fontRGB = hexToRgb(settings.fontColor);
+                fontColor = 'rgb('+fontRGB.r+','+fontRGB.g+','+fontRGB.b+')';
+            } else {
+                fontColor = settings.fontColor;
+            }
+            // boolean user settings
+            allowOverlap = settings.allowOverlap;
+            randomizeColors = settings.randomColors;
 
-            var canvasDimensions = {
+            // object used to size canvas when drawing
+            canvasDimensions = {
                 minX: 0,
                 minY: 0,
                 width: 0,
                 height: 0
             };
 
-            // helper functions
-            function checkValue(value, array) {
-                for (var i = 0; i < array.length; i++) {
-                    if (array[i].word === value) {
-                        return true;
-                    }
-                }
-                return false;
-            }
+            // Transform the array of words into an array of objects, one object per unique word.
+            // The limit argument determines the number of word objects returned. The omits argument
+            // leaves out the given words from the accounting.
+            // Each word object returned will have a font size (proportional to its relative count
+            // in the data [word list]), a font, a height, a width, and a color.
+            transformData = function(array, fontSize, limit, omits, fontName, fontColor, randomColors) {
+                var wordFreqData, wordList,
+                    calcFontSize, toCountData, toRelSizing, calcDimensions, assignColor,
+                    maxCount;
 
-            function hexToRgb(hex) {
-                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                return result ? {
-                    r: parseInt(result[1], 16),
-                    g: parseInt(result[2], 16),
-                    b: parseInt(result[3], 16)
-                } : null;
-            }
-
-            // transform the array of words into frequency data set
-            var transformData = function(array, fontPx, limit, omits, font, fontColor, randomColors) {
-                var wordFreqData = [];
-                var wordList = [];
-                var fontSize = fontPx ? fontPx : 30;
-                var fontName = font ? font : 'Arial';
+                // array to be returned
+                wordFreqData = [];
+                // list of unique words
+                wordList = [];
 
                 function Word(val){
                     this.word = val;
@@ -73,12 +70,14 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     this.fontHeight = 0;
                 }
 
-                var calcFontSize = function(relSize, fontPx) {
+                calcFontSize = function(relSize, fontPx) {
                     return Math.floor(relSize * fontPx);
                 };
 
-                var toCountData = function(val, ind, arr) {
+                // populate the wordFreqData array with unique words and get their counts
+                toCountData = function(val, ind, arr) {
                     if (!checkValue(val, wordFreqData)) {
+                        // if the word is in the omits array, don't include it
                         if (omits.indexOf(val) !== -1) {
                             return false;
                         } else {
@@ -92,7 +91,8 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     }
                 };
 
-                var toRelSizing = function(val, ind, arr) {
+                // use the counts and the maxCount to determine the font size for each word
+                toRelSizing = function(val, ind, arr) {
                     var thisCount = val.count;
                     val.count = thisCount / maxCount;
                     val.fontHeight = calcFontSize(val.count, fontSize);
@@ -100,12 +100,12 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 };
 
                 // calc the dimensions taken up by each word based on font size and string length
-                var calcDimensions = function(val, ind, arr) {
+                calcDimensions = function(val, ind, arr) {
                     ctx.font = val.font;
                     val.fillWidth = ctx.measureText(val.word).width;
                 };
 
-                var assignColor = function(val, ind, arr) {
+                assignColor = function(val, ind, arr) {
                     function newColor(){
                         return Math.floor((Math.random() * 256));
                     }
@@ -117,36 +117,40 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     }
                 };
 
-                // Convert the array of objects with a word value and
-                // count value. Store each new word in a wordList array
-                // for ease of finding that word's index
                 array.map(toCountData);
 
-                // sort the frequency data
+                // sort the frequency data to determine the max count
                 wordFreqData.sort(function(a, b){
                     return b.count - a.count;
                 });
-
-                var maxCount = wordFreqData[0].count;
+                maxCount = wordFreqData[0].count;
 
                 // if limit provided, use it to slice the freq data
                 wordFreqData = ! limit ? wordFreqData : wordFreqData.slice(0, limit);
 
-                // convert to relative count, use to calc font size
                 wordFreqData.map(toRelSizing);
-                // calc the dimensions for each word
                 wordFreqData.map(calcDimensions);
-                // assign the color
                 wordFreqData.map(assignColor);
 
                 return wordFreqData;
             };
 
-            var findDrawingCoords = function(array, spread){
+            // Use the transformed data array and user-defined 'spread' var to find drawing
+            // coordinates for each word object. This function adds the drawing coordinates to the
+            // word objects in the passed array and returns that array. If allowOverlap===false,
+            // loop through random coordinates for each word until an unoccupied space is found.
+            // This function also sets the canvasDimensions based on the space that will be
+            // occupied when each word is drawn on the canvas.
+            findDrawingCoords = function(array, spread){
+                var spreadVal, testIncrementer,
+                    occupiedZones,
+                    selectPoint;
+
+                spreadVal = spread;
+                testIncrementer = 0;
+
                 // an array of objects, with minX, minY, maxX(= minX + fillWidth), maxY(= minY + fontHeight)
-                var occupiedZones = [];
-                var spreadVal = spread;
-                var testIncrementer = 0;
+                occupiedZones = [];
 
                 function OccupiedZone(minX, maxX, minY, maxY, word){
                     this.word = word;
@@ -156,23 +160,29 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                     this.maxY = maxY;
                 }
 
-                // 1. select a random point for which to draw from that isn't in the occupied space
-                var selectPoint = function(val, ind, arr){
-                    var randRot, dimensionSpan, SPAN;
-                    // random numbers based around centering the image at 0,0
+                // select a random point to draw from that isn't in the occupied space
+                selectPoint = function(val, ind, arr){
+                    var randRot,
+                        dimensionSpan, SPAN,
+                        newXY, calcTestCoords, addOccupiedZone, testLoop;
+
+                    // set the rotation value for a word
                     randRot = (1 - Math.floor(Math.random() * 3)) * 90;
 
                     SPAN = spreadVal;
                     dimensionSpan = SPAN;
 
-                    var newXY = function(){
+                    // select a new point on the canvas
+                    newXY = function(){
                         var randX = Math.floor((0.5 - Math.random()) * dimensionSpan);
                         var randY = Math.floor((0.5 - Math.random()) * dimensionSpan);
-
                         return calcTestCoords(randX, randY);
                     };
 
-                    var calcTestCoords = function(testX, testY) {
+                    // Given a 2d point, return an object that can be used to approximate the canvas
+                    // space occupied when the given word is drawn at that point with the rotation
+                    // that has been set at the beginning of the function.
+                    calcTestCoords = function(testX, testY) {
                         var testCoords = {};
 
                         testCoords.x = testX;
@@ -203,7 +213,9 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                         return testCoords;
                     };
 
-                    var addOccupiedZone = function(x, y){
+                    // Once an origin point has been selected for a word, use the coordinates to
+                    // add to add a new object to the occupiedZones array.
+                    addOccupiedZone = function(x, y){
                         if (randRot === -90) {
                             occupiedZones.push(new OccupiedZone(
                                 x - val.fontHeight,
@@ -231,14 +243,15 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                         }
                     };
 
-                    var testLoop = function(){
+                    // If allowOverlap===false, test a potential drawing area against the objects in
+                    // the occupiedZones array to minimize word overlap. Otherwise, just add the
+                    // drawing area to the occupiedZones array.
+                    testLoop = function(){
                         var testArea = newXY();
 
                         if(!allowOverlap) {
                             if (occupiedZones.length > 0) {
-
                                 for (var i = 0; i < occupiedZones.length; i++) {
-
                                     if ((testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
                                         (testArea.minX > occupiedZones[i].maxX || testArea.minX < occupiedZones[i].minX || testArea.minY > occupiedZones[i].maxY || testArea.minY < occupiedZones[i].minY) &&
                                         (testArea.maxX > occupiedZones[i].maxX || testArea.maxX < occupiedZones[i].minX || testArea.maxY > occupiedZones[i].maxY || testArea.maxY < occupiedZones[i].minY) &&
@@ -248,45 +261,36 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                                         (testArea.mid3.x > occupiedZones[i].maxX || testArea.mid3.x < occupiedZones[i].minX || testArea.mid3.y > occupiedZones[i].maxY || testArea.mid3.y < occupiedZones[i].minY) &&
                                         (testArea.mid4.x > occupiedZones[i].maxX || testArea.mid4.x < occupiedZones[i].minX || testArea.mid4.y > occupiedZones[i].maxY || testArea.mid4.y < occupiedZones[i].minY)
                                     ) {
-
                                         if (i === occupiedZones.length - 1) {
-
                                             val.xCoord = testArea.x;
                                             val.yCoord = testArea.y;
                                             val.rot = randRot;
-
                                             addOccupiedZone(testArea.x, testArea.y);
                                             dimensionSpan = SPAN;
                                             break;
                                         } else {
                                             continue;
                                         }
-
                                     } else {
-
+                                        // grow out the span of the randomized point selection if
+                                        // an unoccupied space cannot be found at the provided spread
                                         testIncrementer++;
                                         if (testIncrementer >= 10000) {
                                             dimensionSpan += 10;
                                         }
                                         return testLoop();
-
                                     }
-
                                 }
-
                             } else {
-
                                 val.xCoord = testArea.x;
                                 val.yCoord = testArea.y;
                                 val.rot = randRot;
-
                                 addOccupiedZone(testArea.x, testArea.y);
                             }
                         } else {
                             val.xCoord = testArea.x;
                             val.yCoord = testArea.y;
                             val.rot = randRot;
-
                             addOccupiedZone(testArea.x, testArea.y);
                         }
                     };
@@ -324,7 +328,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             };
 
             // use the drawing coordinates to draw the word cloud
-            var drawWordCloud = function(coordsArray, canvasSizingObj) {
+            drawWordCloud = function(coordsArray, canvasSizingObj) {
 
                 var drawWord = function(word) {
                     ctx.translate( word.xCoord, word.yCoord ); // the x, y coords for this word
@@ -349,9 +353,27 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 coordsArray.forEach(drawWord);
             };
 
+            // helper functions
+            function checkValue(value, array) {
+                for (var i = 0; i < array.length; i++) {
+                    if (array[i].word === value) {
+                        return true;
+                    }
+                }
+                return false;
+            }
 
-            var transformedList = transformData(wordList, textSize, wordLimit, omits, font, fontColor, randomizeColors);
-            var drawingCoords = findDrawingCoords(transformedList, cloudSpread);
+            function hexToRgb(hex) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            }
+
+            transformedData = transformData(wordList, textSize, wordLimit, omits, font, fontColor, randomizeColors);
+            drawingCoords = findDrawingCoords(transformedData, cloudSpread);
             drawWordCloud(drawingCoords, canvasDimensions);
 
         }
