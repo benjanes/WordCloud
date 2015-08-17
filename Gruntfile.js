@@ -143,6 +143,13 @@ module.exports = function(grunt) {
             }
         },
 
+        'gh-pages': {
+            options: {
+                base: 'dist/app'
+            },
+            src: ['**']
+        },
+
         connect: {
             server: {
                 options: {
@@ -163,8 +170,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-autoprefixer');
     grunt.loadNpmTasks('grunt-targethtml');
+    grunt.loadNpmTasks('grunt-gh-pages');
 
     grunt.registerTask('default', ['sass', 'jshint', 'uglify:dev', 'copy:dev', 'targethtml:dev', 'connect:server', 'watch']);
 
-    grunt.registerTask('build', ['sass', 'autoprefixer', 'cssmin', 'uglify', 'copy:dist', 'targethtml:dist']);
+    grunt.registerTask('build', ['sass', 'autoprefixer', 'cssmin', 'uglify', 'copy:dist', 'targethtml:dist', 'gh-pages']);
 };
