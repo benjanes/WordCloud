@@ -1,0 +1,92 @@
+<form>
+    <section class="control-panel-section">
+        <div class="control-panel-header">
+            <h4>Font Settings</h4>
+        </div>
+
+        <div class="control-panel-body">
+            <div class="row form-row">
+
+                <section class="col-sm-6">
+                    <label for="fontType">Font</label><br />
+                    <select name="fontType">
+                        <option value="Arial">Arial</option>
+                        <option value="Cabin">Cabin</option>
+                        <option value="Lora">Lora</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Raleway">Raleway</option>
+                        <option value="Roboto Slab">Roboto Slab</option>
+                        <option value="Ubuntu">Ubuntu</option>
+                    </select>
+                </section>
+
+                <section class="col-sm-6">
+                    <label for="textSize">Font Size</label>
+                    <input type="range" name="textSize" min="20" max="100" step="1" value="50" />
+                </section>
+
+            </div>
+
+            <div class="row form-row">
+
+                <section class="col-sm-6">
+                    <label for="fontColor">Font Color</label>
+                    <div class="input-group color-select-area">
+                        <input type="text" value="#000000" name="fontColor" class="form-control" />
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
+                </section>
+
+                <section class="col-sm-6">
+                    <span class="js-tooltip" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Selecting this option overrides any color selection to the left. Each word will be drawn in a different, randomly selected color.">
+                        <label for="randomColors">Random Colors</label><br />
+                        <input type="checkbox" name="randomColors"> Randomize font colors?
+                    </span>
+                </section>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="control-panel-section">
+        <div class="control-panel-header">
+            <h4>Cloud Settings</h4>
+        </div>
+
+        <div class="control-panel-body">
+            <div class="row form-row">
+
+                <section class="col-sm-6">
+                    <span class="js-tooltip" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="How many words from the text document should be included in the cloud? By default, the top 50 words are drawn.">
+                        <label for="wordLimit">Word Limit</label>
+                        <input type="range" name="wordLimit" min="3" max="250" step="1" value="50" />
+                    </span>
+                </section>
+
+                <section class="col-sm-6">
+                    <span class="js-tooltip" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="How diffuse should the cloud be?">
+                        <label for="cloudSpread">Cloud Spread</label>
+                        <input type="range" name="cloudSpread" min="100" max="500" step="10" value="150" />
+                    </span>
+                </section>
+
+            </div>
+
+            <div class="form-row">
+                <span class="js-tooltip" data-toggle="tooltip" data-placement="right" data-trigger="hover" title="Deselecting this option can lead to very diffuse word clouds, especially in cases where there are many unique, long words">
+                    <input type="checkbox" name="allowOverlap" checked> Allow words to overlap?
+                </span>
+                <br />
+            </div>
+
+            <div class="form-row">
+                <span class="js-tooltip" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="You may want to omit very common words from your cloud. By default, 'a', 'the', and 'and' are omitted.">
+                    <label for="omittedWords">Words to Omit. Separate words with a space.</label>
+                    <input type="text" name="omittedWords" value="a the and" />
+                </span>
+            </div>
+        </div>
+    </section>
+
+</form>
