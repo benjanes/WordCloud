@@ -34,7 +34,7 @@ WordCloud.module('Wordlist', function(Wordlist, WordCloud, Backbone, Marionette,
 
             // load in a sample if there aren't any files loaded in local storage
             if(files.length === 0){
-                var sampleFile = new Wordlist.File({fileName: 'Sample File', fileWords: ['this', 'is', 'wordcloud', 'wordcloud']});
+                var sampleFile = new Wordlist.File({fileName: 'Example', fileWords: ['this', 'this', 'is', 'is', 'is', 'wordcloud', 'wordcloud', 'wordcloud', 'wordcloud']});
                 files.add(sampleFile);
                 sampleFile.save();
             }

@@ -4,8 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WordCloud</title>
+    <!--(if target dev)><!-->
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/bootstrap-colorpicker.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-colorpicker.css">
+    <!--<!(endif)-->
+    <!--(if target dist)><!-->
+    <link rel="stylesheet" href="assets/css/style.min.css">
+    <!--<!(endif)-->
     <link href='http://fonts.googleapis.com/css?family=Ubuntu|Roboto+Slab|Lora|Montserrat|Raleway|Playfair+Display|Cabin' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" href="favicon.ico">
 </head>
@@ -39,6 +44,8 @@
 
     <script type="text/javascript" src="assets/js/libs.min.js"></script>
     <script type="text/javascript" src="assets/js/config.min.js"></script>
+
+    <!--(if target dev)><!-->
     <script type="text/javascript" src="assets/js/app.js"></script>
     <script type="text/javascript" src="assets/js/models/wordlist.js"></script>
     <script type="text/javascript" src="assets/js/Collections/filecollection.js"></script>
@@ -50,6 +57,12 @@
     <script type="text/javascript" src="assets/js/settings/settings_view.js"></script>
     <script type="text/javascript" src="assets/js/settings/settings_controller.js"></script>
     <script type="text/javascript" src="assets/js/load/load_view.js"></script>
+    <!--<!(endif)-->
+
+    <!--(if target dist)><!-->
+    <script type="text/javascript" src="assets/js/app.min.js"></script>
+    <!--<!(endif)-->
+
     <script type="text/javascript">
         WordCloud.start();
     </script>

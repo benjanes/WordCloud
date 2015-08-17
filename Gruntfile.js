@@ -17,6 +17,22 @@ module.exports = function(grunt) {
         'dev_files/js/config/**/*.js'
     ];
 
+    var jsApp = [
+        'dev_files/js/libs.min.js',
+        'dev_files/js/config.min.js',
+        'dev_files/js/app.js',
+        'dev_files/js/models/wordlist.js',
+        'dev_files/js/Collections/filecollection.js',
+        'dev_files/js/filelist/filelist_view.js',
+        'dev_files/js/canvas/canvas_view.js',
+        'dev_files/js/canvas/canvas_controller.js',
+        'dev_files/js/selectedfile/selectedfile_view.js',
+        'dev_files/js/selectedfile/selectedfile_controller.js',
+        'dev_files/js/settings/settings_view.js',
+        'dev_files/js/settings/settings_controller.js',
+        'dev_files/js/load/load_view.js'
+    ];
+
     // project config
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -33,6 +49,22 @@ module.exports = function(grunt) {
             }
         },
 
+        autoprefixer: {
+            dist: {
+                files: {
+                    'app/assets/css/style.css' : 'app/assets/css/style.css'
+                }
+            }
+        },
+
+        cssmin: {
+            target: {
+                files: {
+                    'dist/app/assets/css/style.min.css' : ['app/assets/css/style.css', 'bower_components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css']
+                }
+            }
+        },
+
         jshint: {
             all: [
                 'Gruntfile.js',
@@ -42,6 +74,13 @@ module.exports = function(grunt) {
 
         uglify: {
             dist: {
+                files: {
+                    'dist/app/assets/js/libs.min.js': [jsLibs],
+                    'dist/app/assets/js/config.min.js': [jsConfig],
+                    'dist/app/assets/js/app.min.js': [jsApp],
+                }
+            },
+            dev: {
                 files: {
                     'app/assets/js/libs.min.js': [jsLibs],
                     'app/assets/js/config.min.js': [jsConfig]
@@ -63,22 +102,44 @@ module.exports = function(grunt) {
             },
             copy: {
                 files: ['dev_files/**'],
-                tasks: ['copy']
+                tasks: ['copy:dev']
             }
         },
 
         copy: {
-            main: {
+            dist: {
                 files: [
-                    {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html', '!plugins/**', '!favicon.ico'], dest: 'app/assets/'},
-                    {expand: true, cwd: 'dev_files/', src: 'index.html', dest: 'app/'},
+                    {expand: true, cwd: 'dev_files/', src: 'favicon.ico', dest: 'dist/app/'},
+                    {expand: true, cwd: 'dev_files/', src: 'templates/**', dest: 'dist/app/assets/'},
+                    // bootstrap glyphicons
+                    {expand: true, cwd: 'bower_components/bootstrap-sass/assets/', src: 'fonts/**', dest: 'dist/app/assets/'},
+                    // colorpicker plugin
+                    {expand: true, cwd: 'bower_components/mjolnic-bootstrap-colorpicker/dist/', src: 'img/**', dest: 'dist/app/assets/'}
+                ]
+            },
+            dev: {
+                files: [
+                    {expand: true, cwd: 'dev_files/', src: ['**/*', '!sass/**', '!js/config/**', '!index.html', '!favicon.ico'], dest: 'app/assets/'},
                     {expand: true, cwd: 'dev_files/', src: 'favicon.ico', dest: 'app/'},
                     // bootstrap glyphicons
-                    {expand: true, cwd: 'bower_components/bootstrap-sass/assets/', src: 'fonts/', dest: 'app/assets/'},
+                    {expand: true, cwd: 'bower_components/bootstrap-sass/assets/', src: 'fonts/**', dest: 'app/assets/'},
                     // colorpicker plugin
-                    {expand: true, cwd: 'bower_components/mjolnic-bootstrap-colorpicker/dist/css/', src: 'bootstrap-colorpicker.min.css', dest: 'app/assets/css/'},
+                    {expand: true, cwd: 'bower_components/mjolnic-bootstrap-colorpicker/dist/css/', src: 'bootstrap-colorpicker.css', dest: 'app/assets/css/'},
                     {expand: true, cwd: 'bower_components/mjolnic-bootstrap-colorpicker/dist/', src: 'img/**', dest: 'app/assets/'}
                 ]
+            }
+        },
+
+        targethtml: {
+            dist: {
+                files: {
+                    'dist/app/index.html': 'dev_files/index.html'
+                }
+            },
+            dev: {
+                files: {
+                    'app/index.html': 'dev_files/index.html'
+                }
             }
         },
 
@@ -99,7 +160,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-autoprefixer');
+    grunt.loadNpmTasks('grunt-targethtml');
 
-    grunt.registerTask('default', ['sass', 'jshint', 'uglify', 'copy', 'connect:server', 'watch']);
-    //grunt.registerTask('serve', ['default', 'connect:server', 'watch']);
+    grunt.registerTask('default', ['sass', 'jshint', 'uglify:dev', 'copy:dev', 'targethtml:dev', 'connect:server', 'watch']);
+
+    grunt.registerTask('build', ['sass', 'autoprefixer', 'cssmin', 'uglify', 'copy:dist', 'targethtml:dist']);
 };

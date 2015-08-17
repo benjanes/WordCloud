@@ -16,11 +16,6 @@ WordCloud.on('before:start', function(){
     WordCloud.regions = new RegionContainer();
 });
 
-//WordCloud.on('file:load', function(newFile){
-//    console.log('hi');
-//    WordCloud.
-//});
-
 WordCloud.on('file:select', function(model){
     WordCloud.regions.canvas.show( new WordCloud.Canvas.Instructions2({
         model: model
@@ -30,8 +25,14 @@ WordCloud.on('file:select', function(model){
 });
 
 WordCloud.on('cloud:draw', function(model){
-    var settings = WordCloud.Settings.Controller.getSettings();
-    WordCloud.Canvas.Controller.drawCloud(model, settings);
+    var defer = $.Deferred();
+
+    defer.done(function(settings){
+        WordCloud.Canvas.Controller.drawCloud(model, settings);
+    });
+
+    defer.resolve( WordCloud.Settings.Controller.getSettings() );
+
 });
 
 WordCloud.on('start', function(){
