@@ -9,17 +9,20 @@ header
     background-color: $primary-color
     color: #F1F1F1
 
-.header-row
-    display: table
-
-.header-left
-    display: table-cell
-    float: none
-
 .header-right
-    display: table-cell
-    float: none
     text-align: right
+
+@media (min-width: 768px)
+    .header-row
+        display: table
+
+    .header-left
+        display: table-cell
+        float: none
+
+    .header-right
+        display: table-cell
+        float: none
 
 .app-title
     display: inline-block
@@ -82,6 +85,9 @@ header
     margin-bottom: 0.4em
 
 .form-row
+    margin-bottom: 1em
+
+.canvas-region-container
     margin-bottom: 1em
 
 .canvas-container
