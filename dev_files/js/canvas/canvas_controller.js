@@ -142,12 +142,12 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
             // This function also sets the canvasDimensions based on the space that will be
             // occupied when each word is drawn on the canvas.
             findDrawingCoords = function(array, spread){
-                var spreadVal, testIncrementer,
+                var spreadVal,
                     occupiedZones,
                     selectPoint;
 
                 spreadVal = spread;
-                testIncrementer = 0;
+
 
                 // an array of objects, with minX, minY, maxX(= minX + fillWidth), maxY(= minY + fontHeight)
                 occupiedZones = [];
@@ -163,7 +163,7 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
                 // select a random point to draw from that isn't in the occupied space
                 selectPoint = function(val, ind, arr){
                     var randRot,
-                        dimensionSpan, SPAN,
+                        dimensionSpan, SPAN, testIncrementer,
                         newXY, calcTestCoords, addOccupiedZone, testLoop;
 
                     // set the rotation value for a word
@@ -171,6 +171,8 @@ WordCloud.module('Canvas', function(Canvas, WordCloud, Backbone, Marionette, $, 
 
                     SPAN = spreadVal;
                     dimensionSpan = SPAN;
+
+                    testIncrementer = 0;
 
                     // select a new point on the canvas
                     newXY = function(){
