@@ -1,5 +1,5 @@
 ## WordCloud
-An app for creating a word cloud image from a text file.
+WordCloud is an app for creating a word cloud image from an uploaded text file. Try it out at http://www.benjanes.com/WordCloud/. To work on WordCloud:
 
 #### 1. Run npm install
     npm install
